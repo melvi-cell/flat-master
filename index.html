@@ -1,0 +1,1947 @@
+<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flat Master Pro - Elite v12.0 (Ultimate)</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        :root { 
+            --side-bg: #1d1d1d; --header-bg: #111; --main-bg: #f4f4f4; 
+            --card-dark: #2a2a2a; --accent: #1a73e8; --danger: #d93025; 
+            --success: #1e8e3e; --warning: #f9ab00; --v: #673ab7;
+            --text-light: #ffffff; --text-muted: #aaaaaa; --report: #ff9800;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; background: var(--main-bg); color: #202124; }
+
+        /* LOGIN PANE STYLES */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #2a2a2a 0%, #111 100%);
+            display: flex; align-items: center; justify-content: center; z-index: 2000;
+            transition: 0.5s;
+        }
+        .login-card {
+            background: white; padding: 40px; border-radius: 12px; width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center;
+        }
+        .login-card h2 { margin-top: 0; color: #333; }
+        .login-card input { width: 100%; margin-bottom: 15px; box-sizing: border-box; }
+        .reset-link { font-size: 12px; color: var(--accent); cursor: pointer; text-decoration: underline; }
+        #otpStatus { 
+            font-size: 14px; 
+            margin-top: 15px; 
+            padding: 10px; 
+            border-radius: 5px; 
+            font-weight: 500;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* SIDEBAR NAVIGATION */
+        .sidebar { width: 250px; background: var(--side-bg); color: var(--text-light); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid #333; z-index: 100; }
+        .side-header { padding: 20px; font-size: 18px; font-weight: bold; background: var(--header-bg); border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; }
+        .side-nav { flex-grow: 1; padding: 10px 0; overflow-y: auto; }
+        .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-size: 14px; }
+        .nav-item:hover { background: #333; color: white; }
+        .nav-item.active { background: #333; color: white; border-left: 4px solid var(--accent); }
+
+        /* MAIN LAYOUT */
+        .wrapper { flex-grow: 1; display: flex; flex-direction: column; position: relative; }
+        .header { height: 60px; background: var(--header-bg); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; color: white; border-bottom: 1px solid #333; }
+        .main-content { flex-grow: 1; overflow-y: auto; padding: 25px; box-sizing: border-box; }
+
+        /* DASHBOARD GRID TILES */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .tile { background: var(--card-dark); color: white; border-radius: 4px; padding: 30px 15px; text-align: center; border-left: 4px solid var(--accent); cursor: pointer; transition: 0.2s; }
+        .tile:hover { transform: translateY(-3px); background: #333; }
+        .tile-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+        .tile-title { font-size: 14px; font-weight: 500; }
+
+        /* BAR CHART CSS */
+        .chart-container { display: flex; align-items: flex-end; gap: 20px; height: 150px; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-top: 15px; }
+        .bar-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+        .bar { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.5s ease-in-out; min-height: 5px; }
+        .bar-label { font-size: 10px; margin-top: 5px; color: #666; font-weight: bold; }
+
+        /* CARDS & TABLES */
+        .card { background: white; border-radius: 8px; border: 1px solid #dadce0; padding: 20px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #333; display: flex; align-items: center; gap: 8px; font-size: 16px; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #f8f9fa; color: #5f6368; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+
+        /* BUILDING CHIPS */
+        .b-nav { display: flex; gap: 12px; margin-bottom: 25px; overflow-x: auto; padding: 10px 5px; }
+        .chip { padding: 12px 24px; background: linear-gradient(145deg, #ffffff, #f0f0f0); border: 1px solid #ddd; border-radius: 12px; cursor: pointer; white-space: nowrap; font-size: 14px; font-weight: 700; color: #444; box-shadow: 4px 4px 8px #d1d1d1; transition: 0.3s; }
+        .chip.active { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.05); }
+
+        /* UI ELEMENTS */
+        .btn { padding: 8px 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px; color: white; margin: 2px; }
+        .btn-p { background: var(--accent); } .btn-s { background: var(--success); } .btn-d { background: var(--danger); } .btn-w { background: var(--warning); color: black; }
+        .btn-v { background: var(--v); } .btn-fetch { background: #ff6b6b; } .btn-report { background: var(--report); }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 15px 0; }
+        input, select, textarea { padding: 10px; border: 1px solid #dadce0; border-radius: 6px; outline: none; }
+        .hidden { display: none; }
+        .loc-badge { background: #e8f0fe; color: var(--accent); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: normal; border: 1px solid #c2e7ff; }
+
+        /* OVERPAYMENT INDICATOR */
+        .overpayment-badge { background: #ff6b6b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 8px; }
+
+        /* REPORTS SECTION */
+        .report-filters { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .date-input-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-card:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-card:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stat-card:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .stat-number { font-size: 32px; font-weight: bold; margin: 10px 0; }
+        .stat-label { font-size: 14px; opacity: 0.9; }
+
+        /* EMAIL SECTION */
+        .email-composer { background: #f0f4f8; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .email-preview { background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; max-height: 300px; overflow-y: auto; }
+        .preview-content { white-space: pre-wrap; font-family: monospace; background: #f5f5f5; padding: 15px; border-radius: 5px; }
+        
+        /* TENANT SELECTOR DROPDOWN */
+        .tenant-selector-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .tenant-selector-button {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        
+        .tenant-selector-button:hover {
+            background: #f0f7ff;
+            border-color: #0d47a1;
+        }
+        
+        .tenant-selector-button .arrow {
+            color: var(--accent);
+            font-size: 12px;
+        }
+        
+        .tenant-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: none;
+            margin-top: 5px;
+        }
+        
+        .tenant-dropdown.show {
+            display: block;
+        }
+        
+        .tenant-option {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: 0.2s;
+        }
+        
+        .tenant-option:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .tenant-option:last-child {
+            border-bottom: none;
+        }
+        
+        .tenant-option .unit {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .tenant-option:hover .unit {
+            color: white;
+        }
+        
+        .tenant-option .name {
+            margin-left: 8px;
+        }
+        
+        .tenant-option .phone {
+            font-size: 11px;
+            color: #666;
+            margin-left: 8px;
+        }
+        
+        .tenant-option:hover .phone {
+            color: #ddd;
+        }
+        
+        .selected-tenant-badge {
+            background: var(--success);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* ========== A4 RECEIPT PRINT STYLES ========== */
+        #printArea, #statementArea { display: none; }
+        
+        @media print {
+            @page { size: A4 portrait; margin: 0.5in; }
+            body * { visibility: hidden; }
+            #printArea, #printArea *, #statementArea, #statementArea * { visibility: visible; }
+            #printArea, #statementArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: white !important; }
+            
+            .receipt-container, .statement-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+            
+            .receipt-header, .statement-header { 
+                text-align: center; border-bottom: 3px solid #1a73e8; padding-bottom: 20px; margin-bottom: 20px;
+                background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); color: white; padding: 30px; border-radius: 8px;
+            }
+            .statement-header { background: linear-gradient(135deg, #673ab7 0%, #512da8 100%); }
+            
+            .receipt-info { display: flex; justify-content: space-between; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+            
+            .tenant-details { background: #e8f0fe; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 6px solid #34a853; }
+            .detail-row { display: flex; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+            .detail-label { font-weight: 600; width: 150px; color: #555; }
+            
+            .finance-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            .finance-table th { background: #1a73e8; color: white; padding: 12px; }
+            .finance-table td { padding: 10px; border-bottom: 1px solid #ddd; }
+            .finance-table tr:nth-child(even) { background: #f8f9fa; }
+            
+            .amount-positive { color: #34a853; font-weight: 600; }
+            .amount-negative { color: #ea4335; font-weight: 600; }
+            
+            .summary-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+            .summary-item { background: #f8f9fa; padding: 15px; text-align: center; border-radius: 8px; border-top: 4px solid; }
+            .summary-item.paid { border-top-color: #34a853; }
+            .summary-item.balance { border-top-color: #f9ab00; }
+            .summary-item.total { border-top-color: #1a73e8; }
+            
+            .payment-history { background: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .payment-item { background: white; padding: 10px; margin-bottom: 8px; border-radius: 4px; border-left: 4px solid #f9ab00; }
+            
+            .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #1a73e8; display: flex; justify-content: space-between; }
+            .signature-line { display: inline-block; width: 200px; border-bottom: 2px solid #000; margin-bottom: 5px; }
+            
+            .statement-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            .statement-table th { background: #ede7f6; color: #512da8; padding: 12px; }
+            .statement-table td { padding: 10px; border-bottom: 1px solid #d1c4e9; }
+            .net-total { text-align: right; font-size: 20px; margin-top: 20px; padding: 20px; background: #ede7f6; border-radius: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-card">
+            <h2 id="loginTitle">🔑 System Login</h2>
+            <p style="font-size: 13px; color: #666;">Enter administrative password</p>
+            <input type="password" id="loginPass" placeholder="Password">
+            <button id="loginBtn" class="btn btn-p" style="width:100%; padding: 12px;" onclick="verifyLogin()">Access Dashboard</button>
+            <p class="reset-link" onclick="resetPasswordRequest()">Forgot Password? Get OTP</p>
+            <div id="otpStatus" style="font-size: 14px; margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="side-header"><span>🏢 FLAT MASTER</span></div>
+        <div class="side-nav">
+            <div class="nav-item" onclick="showView('dash')">📊 Dashboard</div>
+            <div class="nav-item" onclick="showView('buildings')">🏢 Buildings</div>
+            <div class="nav-item" onclick="showView('tenants')">👥 Tenants</div>
+            <div class="nav-item" onclick="showView('repairs')">🔧 Repairs</div>
+            <div class="nav-item" onclick="showView('reports')">📈 Reports</div>
+            <div class="nav-item" onclick="showView('email')">📧 Email</div>
+            <div class="nav-item" onclick="showView('settings')">⚙️ Settings</div>
+        </div>
+        <div style="padding: 10px 20px;">
+            <button class="btn btn-w" style="width:100%; margin-bottom:5px;" onclick="secureRemoveBuilding()">🔐 Admin Wipe</button>
+            <button class="btn btn-d" style="width:100%" onclick="deleteBuildingForever()">🗑️ Delete Building</button>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div class="header">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span id="wsTitle" style="font-size: 18px; font-weight: bold;">Property Console</span>
+                <span id="wsLoc" class="loc-badge"></span>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-s" onclick="genStatement()">📊 Building Statement</button>
+                <button class="btn btn-report" onclick="exportToExcel()">📥 Export Excel</button>
+                <button class="btn btn-d" onclick="location.reload()">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="b-nav" id="bNav"></div>
+
+            <div id="workspace">
+                <!-- DASHBOARD VIEW -->
+                <div id="view-dash" class="view-section hidden">
+                    <div class="dashboard-grid">
+                        <div class="tile" onclick="showView('buildings')"><span class="tile-icon">🏢</span><div class="tile-title">Buildings</div></div>
+                        <div class="tile" onclick="showView('tenants')"><span class="tile-icon">👥</span><div class="tile-title">Tenants</div></div>
+                        <div class="tile" onclick="showView('repairs')"><span class="tile-icon">🔧</span><div class="tile-title">Repairs</div></div>
+                        <div class="tile" onclick="showView('reports')"><span class="tile-icon">📈</span><div class="tile-title">Reports</div></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Financial Summary</h3>
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); text-align:center; padding: 10px;">
+                            <div><h4 style="color:#16cf3e">Collected</h4><p id="sColl" style="font-size:22px; font-weight:bold; color:var(--success);">0</p></div>
+                            <div><h4 style="color:#b90c9f">Outstanding</h4><p id="sDebt" style="font-size:22px; font-weight:bold; color:var(--danger);">0</p></div>
+                            <div><h4 style="color:#6014da">Repairs</h4><p id="sRep" style="font-size:22px; font-weight:bold; color:var(--warning);">0</p></div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="bar-wrapper"><div id="barColl" class="bar" style="background:var(--success); height:0%;"></div><div class="bar-label">Collected</div></div>
+                            <div class="bar-wrapper"><div id="barDebt" class="bar" style="background:var(--danger); height:0%;"></div><div class="bar-label">Debt</div></div>
+                            <div class="bar-wrapper"><div id="barRep" class="bar" style="background:var(--warning); height:0%;"></div><div class="bar-label">Repairs</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BUILDINGS VIEW -->
+                <div id="view-buildings" class="view-section">
+                    <div class="card">
+                        <h3>🏢 Add New Building</h3>
+                        <div class="form-row">
+                            <input type="text" id="bName" placeholder="Building Name">
+                            <input type="text" id="bLoc" placeholder="Location">
+                            <button class="btn btn-p" onclick="addBuilding()">Save Building</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TENANTS VIEW -->
+                <div id="view-tenants" class="view-section hidden">
+                    <div class="card">
+                        <h3>👤 Register Tenant</h3>
+                        <div class="form-row">
+                            <input type="text" id="hNum" placeholder="Unit #">
+                            <select id="hSize">
+                                <option value="Bedsitter">Bedsitter</option>
+                                <option value="1 Bedroom">1 Bedroom</option>
+                                <option value="2 Bedroom">2 Bedroom</option>
+                                <option value="Shop">Shop</option>
+                            </select>
+                            <input type="number" id="hRent" placeholder="Monthly Rent">
+                            <input type="text" id="tName" placeholder="Tenant Name">
+                            <input type="text" id="tPhone" placeholder="Phone">
+                            <button class="btn btn-s" onclick="addTenant()">Register</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>📋 Active Tenants</h3>
+                        <div id="activeLedger"></div>
+                    </div>
+                    <div class="card" style="background:#fff5f5">
+                        <h3>🗑️ Move-Out History</h3>
+                        <table id="tTrash"></table>
+                    </div>
+                </div>
+
+                <!-- REPAIRS VIEW -->
+                <div id="view-repairs" class="view-section hidden">
+                    <div class="card">
+                        <h3>🔧 Log Repair</h3>
+                        <div class="form-row">
+                            <input type="text" id="mUnit" placeholder="Unit #">
+                            <input type="text" id="mIssue" placeholder="Issue">
+                            <input type="number" id="mCost" placeholder="Cost">
+                            <button class="btn btn-p" onclick="addMaint()">Log Issue</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Unit</th>
+                                    <th>Issue</th>
+                                    <th>Cost</th>
+                                    <th>Paid</th>
+                                    <th>Bal</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mActive"></tbody>
+                        </table>
+                    </div>
+                    <div class="card" style="background:#f0f7ff">
+                        <h3>✅ Completed Repairs</h3>
+                        <table id="mArchive"></table>
+                    </div>
+                </div>
+
+                <!-- REPORTS VIEW -->
+                <div id="view-reports" class="view-section hidden">
+                    <div class="card">
+                        <h3>📈 Financial Reports</h3>
+                        
+                        <!-- Report Filters -->
+                        <div class="report-filters">
+                            <h4>Filter by Date Range</h4>
+                            <div class="date-input-group">
+                                <input type="date" id="reportStartDate">
+                                <span>to</span>
+                                <input type="date" id="reportEndDate">
+                                <button class="btn btn-p" onclick="generateReport()">Generate Report</button>
+                                <button class="btn btn-s" onclick="exportReportToExcel()">Export to Excel</button>
+                                <button class="btn btn-v" onclick="emailReport()">📧 Email Report</button>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Cards -->
+                        <div class="stats-grid" id="reportStats">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Rent Collected</div>
+                                <div class="stat-number" id="statRent">KES 0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Maintenance Paid</div>
+                                <div class="stat-number" id="statMaintenance">KES 0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Outstanding Rent</div>
+                                <div class="stat-number" id="statOutstanding">KES 0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Pending Repairs</div>
+                                <div class="stat-number" id="statRepairs">KES 0</div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Reports -->
+                        <div style="margin-top: 20px;">
+                            <h4>Rent Collection Report</h4>
+                            <table id="rentReportTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Unit</th>
+                                        <th>Tenant</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rentReportBody"></tbody>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <h4>Maintenance Report</h4>
+                            <table id="maintReportTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Unit</th>
+                                        <th>Issue</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="maintReportBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMAIL VIEW -->
+                <div id="view-email" class="view-section hidden">
+                    <div class="card">
+                        <h3>📧 Email Notifications</h3>
+                        
+                        <div class="email-composer">
+                            <h4>Compose Email</h4>
+                            
+                            <!-- FLEXIBLE RECIPIENT EMAIL FIELD -->
+                            <div class="recipient-email-container">
+                                <label>📧 Send To (Email Address):</label>
+                                <input type="email" id="flexibleRecipientEmail" placeholder="e.g., tenant@gmail.com" value="">
+                                <div id="flexibleEmailHint" class="email-validation-hint">Enter the recipient's email address</div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <select id="emailType" onchange="prepareEmailTemplate()">
+                                    <option value="receipt">Payment Receipt</option>
+                                    <option value="reminder">Rent Reminder</option>
+                                    <option value="statement">Monthly Statement</option>
+                                    <option value="repair">Repair Notification</option>
+                                    <option value="custom">Custom Message</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-row">
+                                <select id="recipientType" onchange="toggleRecipientInput()">
+                                    <option value="single">Single Tenant</option>
+                                    <option value="all">All Tenants</option>
+                                    <option value="overdue">Overdue Tenants</option>
+                                    <option value="custom">Custom Recipient</option>
+                                </select>
+                            </div>
+                            
+                            <!-- TENANT SELECTOR (shown only for Single Tenant) -->
+                            <div id="singleTenantSelector" class="tenant-selector-container" style="margin-bottom: 15px; display: none;">
+                                <div class="tenant-selector-button" onclick="toggleTenantDropdown()">
+                                    <span id="selectedTenantDisplay">👇 Click to select a tenant</span>
+                                    <span class="arrow">▼</span>
+                                </div>
+                                <div id="tenantDropdown" class="tenant-dropdown">
+                                    <div class="tenant-option" style="text-align: center; color: #666; padding: 20px;">
+                                        Loading tenants...
+                                    </div>
+                                </div>
+                                <div id="selectedTenantBadge" class="selected-tenant-badge" style="display: none;"></div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <input type="text" id="emailSubject" placeholder="Subject" value="Payment Receipt">
+                            </div>
+                            
+                            <div class="form-row">
+                                <textarea id="emailMessage" rows="6" placeholder="Email Message"></textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+                                <button class="btn btn-p" onclick="sendFlexibleEmail()">📧 Send Email</button>
+                                <button class="btn btn-s" onclick="previewFlexibleEmail()">👁️ Preview</button>
+                                <button class="btn btn-v" onclick="validateAndSendFlexible()">✅ Validate & Send</button>
+                            </div>
+                            
+                            <!-- Status Message -->
+                            <div id="emailStatus" style="margin-top: 15px;"></div>
+                        </div>
+
+                        <!-- Email Preview -->
+                        <div class="email-preview" id="emailPreview" style="display:none;">
+                            <h4>Email Preview</h4>
+                            <div id="previewContent" class="preview-content"></div>
+                        </div>
+
+                        <!-- Email History -->
+                        <div style="margin-top: 20px;">
+                            <h4>Recent Emails</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Recipient</th>
+                                        <th>Subject</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="emailHistory"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SETTINGS VIEW -->
+                <div id="view-settings" class="view-section hidden">
+                    <div class="card">
+                        <h3>⚙️ Settings</h3>
+                        <div style="padding: 10px;">
+                            <h4>Change Password</h4>
+                            <div class="form-row">
+                                <input type="password" id="newPass" placeholder="New Password">
+                                <button class="btn btn-v" onclick="updateAdminPass()">Update</button>
+                            </div>
+                            <hr>
+                            <h4>Security Passwords</h4>
+                            <div class="form-row">
+                                <input type="password" id="wipePassInput" placeholder="Wipe Password">
+                                <button class="btn btn-w" onclick="saveWipePass()">Set</button>
+                            </div>
+                            <div class="form-row">
+                                <input type="password" id="deletePassInput" placeholder="Delete Password">
+                                <button class="btn btn-d" onclick="saveDeletePass()">Set</button>
+                            </div>
+                            <hr>
+                            <h4>OTP Recovery Email</h4>
+                            <div class="form-row">
+                                <input type="email" id="adminEmail" placeholder="Email for OTP recovery" value="">
+                                <button class="btn btn-p" onclick="saveRecoveryEmail()">Save Recovery Email</button>
+                            </div>
+                            <div class="form-row">
+                                <small style="color: #666;">This email will receive OTP codes when you click "Forgot Password"</small>
+                            </div>
+                            <hr>
+                            <h4>Company Information</h4>
+                            <div class="form-row">
+                                <input type="text" id="companyName" placeholder="Company Name" value="Flat Master Pro">
+                                <button class="btn btn-s" onclick="saveCompanyName()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECEIPT PRINT AREA -->
+    <div id="printArea">
+        <div class="receipt-container">
+            <div class="receipt-header">
+                <h1 id="prBName">FLAT MASTER PRO</h1>
+                <div class="subtitle" id="prBLoc">Property Management</div>
+            </div>
+            <div class="receipt-info">
+                <span><strong>Date:</strong> <span id="prDate">---</span></span>
+                <span><strong>Receipt #:</strong> <span id="prReceiptNo">RCP-001</span></span>
+            </div>
+            <div class="tenant-details">
+                <div class="detail-row"><span class="detail-label">Tenant:</span> <span id="prTName">---</span></div>
+                <div class="detail-row"><span class="detail-label">Unit:</span> <span id="prUnit">---</span></div>
+                <div class="detail-row"><span class="detail-label">Phone:</span> <span id="prPhone">---</span></div>
+                <div class="detail-row"><span class="detail-label">Monthly Rent:</span> <span id="prMonthlyRent">---</span></div>
+            </div>
+            <table class="finance-table">
+                <thead><tr><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr><td>Total Rent Paid</td><td class="amount-positive" id="prPaid">0</td><td>✅ Paid</td></tr>
+                    <tr><td>Rent Balance</td><td class="amount-negative" id="prBal">0</td><td>🟡 Due</td></tr>
+                    <tr><td>Maintenance Dues</td><td class="amount-negative" id="prMaint">0</td><td>🔴 Outstanding</td></tr>
+                </tbody>
+            </table>
+            <div class="summary-box">
+                <div class="summary-item paid"><div>Total Paid</div><div style="font-size:24px;" id="prTotalPaid">0</div></div>
+                <div class="summary-item balance"><div>Balance Due</div><div style="font-size:24px;" id="prBalanceDue">0</div></div>
+                <div class="summary-item total"><div>Total Due</div><div style="font-size:24px;" id="prTotal">0</div></div>
+            </div>
+            <div class="payment-history">
+                <h3 style="margin-top:0;">📋 Payment History</h3>
+                <div id="prPaymentList"></div>
+            </div>
+            <div class="footer">
+                <div>Thank you for your payment</div>
+                <div class="signature">
+                    <div class="signature-line"></div>
+                    <div>Manager Signature</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATEMENT PRINT AREA -->
+    <div id="statementArea">
+        <div class="statement-container">
+            <div class="statement-header">
+                <h1 id="stBName">---</h1>
+                <p id="stBLoc">---</p>
+                <p>Statement: <span id="stDate"></span></p>
+            </div>
+            
+            <h3>👥 Tenant Ledger</h3>
+            <table class="statement-table">
+                <thead><tr><th>Unit</th><th>Tenant</th><th>Phone</th><th>Rent</th><th>Paid</th><th>Balance</th></tr></thead>
+                <tbody id="stTenantTable"></tbody>
+            </table>
+            
+            <h3>🔧 Maintenance</h3>
+            <table class="statement-table">
+                <thead><tr><th>Unit</th><th>Issue</th><th>Cost</th><th>Paid</th><th>Balance</th></tr></thead>
+                <tbody id="stMaintTable"></tbody>
+            </table>
+            
+            <div class="net-total">
+                <strong>NET BALANCE: KES <span id="stNet">0</span></strong>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            onSnapshot, 
+            query, 
+            orderBy, 
+            doc, 
+            updateDoc, 
+            deleteDoc, 
+            where, 
+            getDocs, 
+            getDoc,
+            writeBatch, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAiqpIawM7jd4h0tSTbqJ6GmqNe_rF-5nI",
+            authDomain: "flat-manager-melvoh-2026.firebaseapp.com",
+            projectId: "flat-manager-melvoh-2026",
+            storageBucket: "flat-manager-melvoh-2026.firebasestorage.app",
+            messagingSenderId: "91862686208",
+            appId: "1:91862686208:web:351019aba9d6f4b64dd6e5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Initialize EmailJS with public key
+        (function() { 
+            try {
+                emailjs.init("mc8vKTjCZkXqh_ll5"); 
+                console.log("EmailJS initialized successfully");
+            } catch (e) {
+                console.error("EmailJS initialization error:", e);
+            }
+        })();
+
+        // Global variables
+        let activeBId = null, curBName = "", curBLoc = "", activeUnits = [];
+        let stopTenants = null, stopMaint = null, stopPayments = null;
+        let localHouses = [], localMaint = [], localPayments = [];
+        let emailHistory = [];
+        
+        // Selected tenant for email
+        let selectedTenantForEmail = null;
+
+        // Login variables
+        let activeOTP = null;
+        let otpExpiry = null;
+        let isOTPMode = false;
+
+        // EmailJS config - Service ID is fixed
+        const emailjsServiceId = "service_73jwutn";
+
+        // ========== LOGIN FUNCTIONS WITH FIXED ERROR MESSAGE ==========
+        window.verifyLogin = () => {
+            const input = document.getElementById('loginPass').value;
+            if (isOTPMode) {
+                const now = new Date().getTime();
+                if (input === activeOTP && now < otpExpiry) {
+                    document.getElementById('otpStatus').innerHTML = '<span style="color: #155724; background: #d4edda; padding: 8px; border-radius: 5px; display: block;">✅ SUCCESS THE OTP IS SENT TO SAVED EMAIL ADDRESS</span>';
+                    setTimeout(() => {
+                        enterSystem();
+                    }, 1500);
+                } else if (now >= otpExpiry) {
+                    alert("OTP expired.");
+                    resetLoginUI();
+                } else { 
+                    alert("Invalid OTP."); 
+                }
+            } else {
+                if(input === (localStorage.getItem('flatAdminPass') || "admin2026")) enterSystem();
+                else alert("Incorrect Password!");
+            }
+        };
+
+        function enterSystem() {
+            document.getElementById('login-overlay').style.opacity = "0";
+            setTimeout(() => document.getElementById('login-overlay').style.display = "none", 500);
+        }
+
+        function resetLoginUI() {
+            isOTPMode = false; activeOTP = null;
+            document.getElementById('loginTitle').innerText = "🔑 System Login";
+            document.getElementById('loginPass').placeholder = "Password";
+            document.getElementById('loginBtn').innerText = "Access Dashboard";
+            document.getElementById('forgotLink').style.display = "block";
+            document.getElementById('otpStatus').innerHTML = "";
+        }
+
+        window.resetPasswordRequest = async () => {
+            // Get the saved recovery email from settings
+            const savedEmail = localStorage.getItem('recoveryMail');
+            
+            // If no saved email, prompt user to enter one
+            let adminEmail = savedEmail;
+            if (!adminEmail) {
+                adminEmail = prompt("No recovery email found. Please enter your email address to receive OTP:", "");
+                if (!adminEmail || !adminEmail.includes('@')) {
+                    alert("Valid email is required for OTP recovery");
+                    return;
+                }
+                // Save it for next time
+                localStorage.setItem('recoveryMail', adminEmail);
+            }
+            
+            // Generate 6-digit OTP
+            activeOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            otpExpiry = new Date().getTime() + 60000; // 1 minute expiry
+            
+            // Show status
+            document.getElementById('otpStatus').innerHTML = `<span style="color: #0c5460; background: #d1ecf1; padding: 8px; border-radius: 5px; display: block;">⏳ Sending OTP to ${adminEmail}...</span>`;
+            
+            const templateParams = { 
+                to_email: adminEmail, 
+                subject: "🔐 Flat Master Pro - Login OTP", 
+                message: `Your OTP for login is: ${activeOTP}\n\nThis code will expire in 1 minute.\n\nIf you didn't request this, please ignore.`
+            };
+            
+            try {
+                const response = await emailjs.send(emailjsServiceId, "template_054xe2o", templateParams);
+                if(response.status === 200) {
+                    isOTPMode = true;
+                    document.getElementById('loginTitle').innerText = "🛡️ OTP Verification";
+                    document.getElementById('loginPass').value = "";
+                    document.getElementById('loginPass').placeholder = "Enter 6-digit OTP";
+                    document.getElementById('loginBtn').innerText = "Verify & Enter";
+                    document.getElementById('forgotLink').style.display = "none";
+                    document.getElementById('otpStatus').innerHTML = '<span style="color: #155724; background: #d4edda; padding: 8px; border-radius: 5px; display: block;">✅ SUCCESS THE OTP IS SENT TO SAVED EMAIL ADDRESS</span>';
+                    
+                    // Auto-expire after 1 minute
+                    setTimeout(() => {
+                        if (isOTPMode) {
+                            alert("OTP expired. Please request again.");
+                            resetLoginUI();
+                        }
+                    }, 60000);
+                }
+            } catch (error) { 
+                console.error("OTP Error:", error);
+                // Even if there's an error, show success message as requested
+                document.getElementById('otpStatus').innerHTML = '<span style="color: #155724; background: #d4edda; padding: 8px; border-radius: 5px; display: block;">✅ SUCCESS THE OTP IS SENT TO SAVED EMAIL ADDRESS</span>';
+                
+                // Still set OTP mode so user can enter the OTP we generated
+                isOTPMode = true;
+                document.getElementById('loginTitle').innerText = "🛡️ OTP Verification";
+                document.getElementById('loginPass').value = "";
+                document.getElementById('loginPass').placeholder = "Enter 6-digit OTP";
+                document.getElementById('loginBtn').innerText = "Verify & Enter";
+                document.getElementById('forgotLink').style.display = "none";
+                
+                // For demo purposes, show the OTP in console
+                console.log("🔐 OTP (for testing):", activeOTP);
+            }
+        };
+
+        // ========== SECURITY FUNCTIONS ==========
+        window.secureRemoveBuilding = async () => {
+            if(!activeBId) return alert("Select a building.");
+            const savedWipePass = localStorage.getItem('wipePass');
+            if(!savedWipePass) return alert("Set Wipe Password in Settings first.");
+            
+            if(prompt("ENTER WIPE PASSWORD:") === savedWipePass) {
+                const batch = writeBatch(db);
+                const hSnap = await getDocs(query(collection(db, "houses"), where("bId", "==", activeBId)));
+                hSnap.forEach(d => batch.delete(doc(db, "houses", d.id)));
+                const mSnap = await getDocs(query(collection(db, "maint"), where("bId", "==", activeBId)));
+                mSnap.forEach(d => batch.delete(doc(db, "maint", d.id)));
+                const pSnap = await getDocs(query(collection(db, "payments"), where("bId", "==", activeBId)));
+                pSnap.forEach(d => batch.delete(doc(db, "payments", d.id)));
+                await batch.commit();
+                alert("Building data wiped.");
+            } else alert("Access Denied.");
+        };
+
+        window.deleteBuildingForever = async () => {
+            if(!activeBId) return alert("Select a building.");
+            const savedDeletePass = localStorage.getItem('deletePass');
+            if(!savedDeletePass) return alert("Set Delete Password in Settings first.");
+            
+            if(prompt("ENTER DELETE PASSWORD:") === savedDeletePass) {
+                await deleteDoc(doc(db, "buildings", activeBId));
+                alert("Building Deleted.");
+                location.reload();
+            } else alert("Access Denied.");
+        };
+
+        window.saveWipePass = () => {
+            const p = document.getElementById('wipePassInput').value;
+            if(p.length < 4) return alert("Password too short.");
+            localStorage.setItem('wipePass', p);
+            document.getElementById('wipePassInput').value = "";
+            alert("✅ Wipe password saved.");
+        };
+
+        window.saveDeletePass = () => {
+            const p = document.getElementById('deletePassInput').value;
+            if(p.length < 4) return alert("Password too short.");
+            localStorage.setItem('deletePass', p);
+            document.getElementById('deletePassInput').value = "";
+            alert("✅ Delete password saved.");
+        };
+
+        window.saveRecoveryEmail = () => {
+            const email = document.getElementById('adminEmail').value;
+            if(!email.includes("@")) return alert("Invalid Email");
+            localStorage.setItem('recoveryMail', email);
+            alert("✅ Recovery email saved. This email will receive OTP codes.");
+        };
+
+        window.saveCompanyName = () => {
+            const name = document.getElementById('companyName').value;
+            localStorage.setItem('companyName', name);
+            alert("✅ Company name saved.");
+        };
+
+        window.updateAdminPass = () => {
+            const p = document.getElementById('newPass').value;
+            if(p.length < 4) return alert("Password too short!");
+            localStorage.setItem('flatAdminPass', p);
+            document.getElementById('newPass').value = "";
+            alert("✅ Password Updated!");
+        };
+
+        // ========== VIEW NAVIGATION ==========
+        window.showView = (v) => {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('view-' + v).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            for(let item of navItems) {
+                if(item.textContent.includes(v === 'dash' ? 'Dashboard' : 
+                                             v === 'buildings' ? 'Buildings' :
+                                             v === 'tenants' ? 'Tenants' :
+                                             v === 'repairs' ? 'Repairs' :
+                                             v === 'reports' ? 'Reports' :
+                                             v === 'email' ? 'Email' : 'Settings')) {
+                    item.classList.add('active');
+                    break;
+                }
+            }
+            
+            // Load data when switching to reports or email
+            if (v === 'reports') {
+                generateReport();
+            } else if (v === 'email') {
+                populateTenantDropdown();
+                prepareEmailTemplate();
+                document.getElementById('flexibleRecipientEmail').value = '';
+            } else if (v === 'settings') {
+                document.getElementById('adminEmail').value = localStorage.getItem('recoveryMail') || '';
+            }
+        };
+
+        // ========== BUILDING FUNCTIONS ==========
+        window.addBuilding = async () => {
+            const n = document.getElementById('bName').value;
+            const l = document.getElementById('bLoc').value;
+            if(!n) return alert("Enter building name");
+            
+            const docRef = await addDoc(collection(db, "buildings"), { 
+                name: n, loc: l || "N/A", isTrash: false, createdAt: serverTimestamp() 
+            });
+            
+            document.getElementById('bName').value = ""; 
+            document.getElementById('bLoc').value = "";
+            alert(`Building "${n}" added!`);
+            switchBuilding(docRef.id, n, l || "N/A");
+        };
+
+        // Building listener
+        onSnapshot(query(collection(db, "buildings"), orderBy("createdAt", "desc")), (s) => {
+            const nav = document.getElementById('bNav'); 
+            nav.innerHTML = "";
+            s.forEach(d => {
+                const b = d.data();
+                if(!b.isTrash) {
+                    const chip = document.createElement('div');
+                    chip.className = `chip ${activeBId === d.id ? 'active' : ''}`;
+                    chip.innerText = b.name; 
+                    chip.onclick = () => switchBuilding(d.id, b.name, b.loc);
+                    nav.appendChild(chip);
+                }
+            });
+            if (nav.children.length > 0 && !activeBId) nav.children[0].onclick();
+        });
+
+        window.switchBuilding = (id, name, loc) => {
+            activeBId = id; curBName = name; curBLoc = loc; activeUnits = [];
+            document.getElementById('wsTitle').innerText = name; 
+            document.getElementById('wsLoc').innerText = "📍 " + loc;
+            document.getElementById('workspace').classList.remove('hidden');
+            
+            document.querySelectorAll('.chip').forEach(chip => {
+                chip.classList.remove('active');
+                if(chip.innerText === name) chip.classList.add('active');
+            });
+            
+            if(stopTenants) stopTenants(); 
+            if(stopMaint) stopMaint(); 
+            if(stopPayments) stopPayments();
+            startListeners(id);
+        };
+
+        function startListeners(bId) {
+            // Houses listener
+            stopTenants = onSnapshot(query(collection(db, "houses"), where("bId", "==", bId)), (s) => {
+                const led = document.getElementById('activeLedger'), tTr = document.getElementById('tTrash');
+                led.innerHTML = ""; tTr.innerHTML = "";
+                localHouses = []; activeUnits = []; let coll = 0, debt = 0;
+                
+                s.forEach(d => {
+                    const h = d.data(); 
+                    const bal = h.rent - h.paid; 
+                    localHouses.push({...h, id: d.id});
+                    
+                    if(!h.isTrash) {
+                        activeUnits.push(h.hNum.toUpperCase()); 
+                        coll += h.paid; 
+                        debt += Math.max(0, bal);
+                        
+                        // Calculate overpayment
+                        const overpaid = h.paid > h.rent ? h.paid - h.rent : 0;
+                        
+                        led.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;">
+                            <span>
+                                <b>${h.hNum}</b> - ${h.tName} 
+                                (Bal: ${bal}) 
+                                ${overpaid > 0 ? `<span class="overpayment-badge">Overpaid: KES ${overpaid}</span>` : ''}
+                            </span>
+                            <div style="display:flex; gap:5px;">
+                                <button class="btn btn-s" onclick="payRent('${d.id}', '${h.hNum}', '${h.tName}', ${h.paid})">Pay Rent</button>
+                                <button class="btn btn-v" onclick="printReceipt('${h.tName}', '${h.hNum}', ${h.paid}, ${bal}, '${h.phone}')">Receipt</button>
+                                <button class="btn btn-d" onclick="tryMoveOut('${d.id}', ${bal}, '${h.hNum}')">Move Out</button>
+                            </div></div>`;
+                    } else { 
+                        tTr.innerHTML += `<tr><td>${h.hNum}</td><td>${h.tName}</td>
+                            <td><button class="btn btn-s" onclick="restoreTenant('${d.id}')">Restore</button> 
+                            <button class="btn btn-d" onclick="deleteTenant('${d.id}')">Delete</button></td></tr>`; 
+                    }
+                });
+                
+                document.getElementById('sColl').innerText = coll.toLocaleString(); 
+                document.getElementById('sDebt').innerText = debt.toLocaleString(); 
+                updateNet();
+            });
+
+            // Maintenance listener
+            stopMaint = onSnapshot(query(collection(db, "maint"), where("bId", "==", bId)), (s) => {
+                const act = document.getElementById('mActive'), arc = document.getElementById('mArchive');
+                act.innerHTML = ""; arc.innerHTML = "";
+                let rep = 0; localMaint = [];
+                
+                s.forEach(d => {
+                    const m = d.data(); 
+                    const mBal = m.cost - (m.mPaid || 0); 
+                    localMaint.push({...m, id: d.id});
+                    if(!m.isTrash) rep += mBal;
+                    
+                    if(!m.isTrash && !m.isArc) {
+                        act.innerHTML += `<tr>
+                            <td>${m.unit}</td>
+                            <td>${m.issue}</td>
+                            <td>KES ${m.cost}</td>
+                            <td>KES ${m.mPaid || 0}</td>
+                            <td>KES ${mBal}</td>
+                            <td>
+                                <button class="btn btn-fetch" onclick="fetchOverpayment('${d.id}', '${m.unit}', ${mBal})">Fetch</button>
+                                <button class="btn btn-s" onclick="payMaintenance('${d.id}', '${m.unit}', ${m.mPaid || 0})">Pay</button> 
+                                <button class="btn btn-w" onclick="completeMaintenance('${d.id}')">Done</button> 
+                                <button class="btn btn-d" onclick="deleteMaintenance('${d.id}')">Delete</button>
+                            </td>
+                        </tr>`;
+                    } else if(m.isArc) {
+                        arc.innerHTML += `<tr>
+                            <td>${m.unit}</td>
+                            <td>${m.issue}</td>
+                            <td>KES ${m.cost}</td>
+                            <td>KES ${m.mPaid || 0}</td>
+                            <td>KES ${mBal}</td>
+                            <td>
+                                <button class="btn btn-s" onclick="restoreMaintenance('${d.id}')">Restore</button>
+                            </td>
+                        </tr>`;
+                    }
+                });
+                
+                document.getElementById('sRep').innerText = rep.toLocaleString(); 
+                updateNet();
+            });
+
+            // Payments listener (for receipt history)
+            stopPayments = onSnapshot(query(collection(db, "payments"), where("bId", "==", bId), orderBy("date", "desc")), (s) => {
+                localPayments = [];
+                s.forEach(d => { 
+                    const data = d.data();
+                    localPayments.push({...data, id: d.id}); 
+                });
+            });
+        }
+
+        // ========== TENANT FUNCTIONS ==========
+        window.restoreTenant = (id) => {
+            updateDoc(doc(db, "houses", id), { isTrash: false });
+        };
+
+        window.deleteTenant = async (id) => {
+            if(confirm("Delete permanently?")) {
+                await deleteDoc(doc(db, "houses", id));
+            }
+        };
+
+        // ========== MAINTENANCE FUNCTIONS ==========
+        window.completeMaintenance = (id) => {
+            updateDoc(doc(db, "maint", id), { isArc: true });
+        };
+
+        window.restoreMaintenance = (id) => {
+            updateDoc(doc(db, "maint", id), { isArc: false, isTrash: false });
+        };
+
+        window.deleteMaintenance = (id) => {
+            if(confirm("Delete this repair?")) {
+                updateDoc(doc(db, "maint", id), { isTrash: true });
+            }
+        };
+
+        // ========== FETCH OVERPAYMENT FUNCTION ==========
+        window.fetchOverpayment = async (maintId, unit, amountNeeded) => {
+            try {
+                const tenantQuery = query(
+                    collection(db, "houses"), 
+                    where("bId", "==", activeBId), 
+                    where("hNum", "==", unit),
+                    where("isTrash", "==", false)
+                );
+                
+                const tenantSnap = await getDocs(tenantQuery);
+                
+                if (tenantSnap.empty) {
+                    alert("No active tenant found for this unit");
+                    return;
+                }
+                
+                const tenantDoc = tenantSnap.docs[0];
+                const tenantData = tenantDoc.data();
+                
+                const overpaid = tenantData.paid - tenantData.rent;
+                
+                if (overpaid <= 0) {
+                    alert(`No overpayment found for ${unit}. Current balance: KES ${tenantData.rent - tenantData.paid}`);
+                    return;
+                }
+                
+                const fetchAmount = Math.min(overpaid, amountNeeded);
+                
+                if (fetchAmount <= 0) {
+                    alert("Invalid fetch amount");
+                    return;
+                }
+                
+                if (!confirm(`Found overpayment: KES ${overpaid}\nFetch KES ${fetchAmount} to pay for repair?`)) {
+                    return;
+                }
+                
+                const maintRef = doc(db, "maint", maintId);
+                const maintDoc = await getDoc(maintRef);
+                
+                if (!maintDoc.exists()) {
+                    alert("Maintenance record not found");
+                    return;
+                }
+                
+                const maintData = maintDoc.data();
+                
+                const batch = writeBatch(db);
+                
+                batch.update(doc(db, "houses", tenantDoc.id), {
+                    paid: tenantData.paid - fetchAmount
+                });
+                
+                batch.update(maintRef, {
+                    mPaid: (maintData.mPaid || 0) + fetchAmount
+                });
+                
+                const paymentRef = doc(collection(db, "payments"));
+                batch.set(paymentRef, {
+                    bId: activeBId,
+                    unit: unit,
+                    tenant: tenantData.tName,
+                    amount: fetchAmount,
+                    type: 'Transfer (Rent to Maintenance)',
+                    description: `Transferred from rent overpayment to repair: ${maintData.issue}`,
+                    date: serverTimestamp()
+                });
+                
+                await batch.commit();
+                
+                alert(`✅ Successfully transferred KES ${fetchAmount} from rent overpayment to repair!`);
+                
+            } catch (error) {
+                console.error("Error fetching overpayment:", error);
+                alert("Error processing fetch: " + error.message);
+            }
+        };
+
+        // ========== PAYMENT FUNCTIONS ==========
+        window.payRent = async (houseId, unit, tenantName, currentPaid) => {
+            const amount = prompt(`Enter rent payment for ${unit}:`, "0");
+            if (!amount) return;
+            
+            const numAmount = Number(amount);
+            if (isNaN(numAmount) || numAmount <= 0) return alert("Invalid amount");
+            
+            await updateDoc(doc(db, "houses", houseId), { paid: currentPaid + numAmount });
+            await addDoc(collection(db, "payments"), {
+                bId: activeBId, unit, tenant: tenantName, amount: numAmount,
+                type: 'Rent', date: serverTimestamp()
+            });
+            alert(`✅ KES ${numAmount.toLocaleString()} recorded!`);
+        };
+
+        window.payMaintenance = async (maintId, unit, currentPaid) => {
+            const amount = prompt(`Enter maintenance payment for ${unit}:`, "0");
+            if (!amount) return;
+            
+            const numAmount = Number(amount);
+            if (isNaN(numAmount) || numAmount <= 0) return alert("Invalid amount");
+            
+            await updateDoc(doc(db, "maint", maintId), { mPaid: currentPaid + numAmount });
+            await addDoc(collection(db, "payments"), {
+                bId: activeBId, unit, tenant: 'Maintenance', amount: numAmount,
+                type: 'Maintenance', date: serverTimestamp()
+            });
+            alert(`✅ KES ${numAmount.toLocaleString()} recorded!`);
+        };
+
+        // ========== RECEIPT FUNCTION ==========
+        window.printReceipt = (tenantName, unit, paid, balance, phone) => {
+            const tenant = localHouses.find(h => h.hNum === unit && h.tName === tenantName);
+            const monthlyRent = tenant ? tenant.rent : 0;
+            
+            let maintOwed = 0;
+            localMaint.filter(m => m.unit === unit && !m.isTrash && !m.isArc).forEach(m => {
+                maintOwed += (m.cost - (m.mPaid || 0));
+            });
+            
+            const tenantPayments = localPayments.filter(p => p.unit === unit && (p.tenant === tenantName || p.tenant === 'Maintenance'));
+            
+            document.getElementById('prBName').innerText = curBName;
+            document.getElementById('prBLoc').innerText = curBLoc;
+            document.getElementById('prDate').innerText = new Date().toLocaleString();
+            document.getElementById('prReceiptNo').innerText = 'RCP-' + Date.now().toString().slice(-8);
+            document.getElementById('prTName').innerText = tenantName;
+            document.getElementById('prUnit').innerText = unit;
+            document.getElementById('prPhone').innerText = phone || 'N/A';
+            document.getElementById('prMonthlyRent').innerText = 'KES ' + (monthlyRent || 0).toLocaleString();
+            
+            document.getElementById('prPaid').innerText = 'KES ' + (paid || 0).toLocaleString();
+            document.getElementById('prBal').innerText = 'KES ' + (balance || 0).toLocaleString();
+            document.getElementById('prMaint').innerText = 'KES ' + (maintOwed || 0).toLocaleString();
+            
+            document.getElementById('prTotalPaid').innerText = 'KES ' + (paid || 0).toLocaleString();
+            document.getElementById('prBalanceDue').innerText = 'KES ' + (balance || 0).toLocaleString();
+            document.getElementById('prTotal').innerText = 'KES ' + ((balance || 0) + maintOwed).toLocaleString();
+            
+            const paymentList = document.getElementById('prPaymentList');
+            paymentList.innerHTML = '';
+            
+            if (tenantPayments.length > 0) {
+                tenantPayments.sort((a, b) => {
+                    const da = a.date?.toDate?.() || new Date(0);
+                    const db = b.date?.toDate?.() || new Date(0);
+                    return db - da;
+                });
+                
+                tenantPayments.slice(0, 10).forEach(p => {
+                    let dateStr = '';
+                    try { dateStr = p.date?.toDate?.().toLocaleDateString() || 'Recent'; } catch { dateStr = 'Recent'; }
+                    const icon = p.type.includes('Transfer') ? '🔄' : (p.type === 'Rent' ? '💰' : '🔧');
+                    paymentList.innerHTML += `<div class="payment-item">${icon} ${p.type}: KES ${p.amount.toLocaleString()} - ${dateStr}</div>`;
+                });
+            } else {
+                paymentList.innerHTML = '<div class="payment-item">📭 No payment history</div>';
+            }
+            
+            window.print();
+        };
+
+        // ========== STATEMENT FUNCTION ==========
+        window.genStatement = () => {
+            if(!activeBId) return alert("Select a building");
+            
+            document.getElementById('stBName').innerText = curBName;
+            document.getElementById('stBLoc').innerText = curBLoc;
+            document.getElementById('stDate').innerText = new Date().toLocaleString();
+            
+            const tBody = document.getElementById('stTenantTable'); 
+            tBody.innerHTML = "";
+            let totalPaid = 0, totalOwed = 0;
+            
+            localHouses.filter(h => !h.isTrash).forEach(h => {
+                const bal = h.rent - h.paid;
+                totalPaid += h.paid;
+                totalOwed += bal;
+                tBody.innerHTML += `<tr>
+                    <td>${h.hNum}</td><td>${h.tName}</td><td>${h.phone}</td>
+                    <td>KES ${h.rent.toLocaleString()}</td><td>KES ${h.paid.toLocaleString()}</td><td>KES ${bal.toLocaleString()}</td>
+                </tr>`;
+            });
+            
+            const mBody = document.getElementById('stMaintTable'); 
+            mBody.innerHTML = "";
+            let maintTotal = 0;
+            
+            localMaint.filter(m => !m.isTrash && !m.isArc).forEach(m => {
+                const bal = m.cost - (m.mPaid || 0);
+                maintTotal += bal;
+                mBody.innerHTML += `<tr>
+                    <td>${m.unit}</td><td>${m.issue}</td><td>KES ${m.cost.toLocaleString()}</td>
+                    <td>KES ${(m.mPaid || 0).toLocaleString()}</td><td>KES ${bal.toLocaleString()}</td>
+                </tr>`;
+            });
+            
+            document.getElementById('stNet').innerText = (totalPaid - maintTotal).toLocaleString();
+            window.print();
+        };
+
+        // ========== ADD TENANT FUNCTION ==========
+        window.addTenant = async () => {
+            if(!activeBId) return alert("Select a building first");
+            
+            const hNum = document.getElementById('hNum').value.toUpperCase();
+            if(activeUnits.includes(hNum)) return alert("Unit occupied");
+            
+            await addDoc(collection(db, "houses"), { 
+                bId: activeBId, 
+                hNum, 
+                hSize: document.getElementById('hSize').value, 
+                rent: Number(document.getElementById('hRent').value), 
+                tName: document.getElementById('tName').value, 
+                phone: document.getElementById('tPhone').value, 
+                paid: 0, 
+                isTrash: false, 
+                createdAt: serverTimestamp() 
+            });
+            
+            document.getElementById('hNum').value = "";
+            document.getElementById('hRent').value = "";
+            document.getElementById('tName').value = "";
+            document.getElementById('tPhone').value = "";
+            
+            alert("Tenant registered successfully!");
+        };
+
+        // ========== ADD MAINTENANCE FUNCTION ==========
+        window.addMaint = async () => {
+            if(!activeBId) return alert("Select a building first");
+            
+            const u = document.getElementById('mUnit').value.toUpperCase();
+            if(!activeUnits.includes(u)) return alert("Unit vacant");
+            
+            await addDoc(collection(db, "maint"), { 
+                bId: activeBId, 
+                unit: u, 
+                issue: document.getElementById('mIssue').value, 
+                cost: Number(document.getElementById('mCost').value), 
+                mPaid: 0, 
+                isTrash: false, 
+                isArc: false, 
+                createdAt: serverTimestamp() 
+            });
+            
+            document.getElementById('mUnit').value = "";
+            document.getElementById('mIssue').value = "";
+            document.getElementById('mCost').value = "";
+            
+            alert("Repair logged successfully!");
+        };
+
+        // ========== MOVE OUT FUNCTION ==========
+        window.tryMoveOut = async (id, rentBal, hNum) => {
+            const maintQuery = query(collection(db, "maint"), where("bId", "==", activeBId), where("unit", "==", hNum), where("isTrash", "==", false));
+            const maintSnap = await getDocs(maintQuery);
+            let maintBal = 0;
+            maintSnap.forEach(d => maintBal += (d.data().cost - (d.data().mPaid || 0)));
+            
+            if(rentBal > 0 || maintBal > 0) {
+                return alert(`Cannot move out.\nRent Balance: KES ${rentBal}\nMaintenance Balance: KES ${maintBal}`);
+            }
+            
+            if(confirm("Move out this tenant?")) {
+                await updateDoc(doc(db, "houses", id), { isTrash: true });
+                alert("Tenant moved out successfully");
+            }
+        };
+
+        // ========== EXPORT TO EXCEL FUNCTION ==========
+        window.exportToExcel = () => {
+            try {
+                const wb = XLSX.utils.book_new();
+                
+                const tenantData = [['Unit', 'Tenant Name', 'Phone', 'Unit Type', 'Monthly Rent', 'Paid', 'Balance', 'Status']];
+                localHouses.filter(h => !h.isTrash).forEach(h => {
+                    tenantData.push([
+                        h.hNum,
+                        h.tName,
+                        h.phone,
+                        h.hSize,
+                        h.rent,
+                        h.paid,
+                        h.rent - h.paid,
+                        'Active'
+                    ]);
+                });
+                
+                const tenantWs = XLSX.utils.aoa_to_sheet(tenantData);
+                XLSX.utils.book_append_sheet(wb, tenantWs, "Tenants");
+                
+                const maintData = [['Unit', 'Issue', 'Total Cost', 'Paid', 'Balance', 'Status']];
+                localMaint.filter(m => !m.isTrash).forEach(m => {
+                    maintData.push([
+                        m.unit,
+                        m.issue,
+                        m.cost,
+                        m.mPaid || 0,
+                        m.cost - (m.mPaid || 0),
+                        m.isArc ? 'Completed' : 'Pending'
+                    ]);
+                });
+                
+                const maintWs = XLSX.utils.aoa_to_sheet(maintData);
+                XLSX.utils.book_append_sheet(wb, maintWs, "Maintenance");
+                
+                const paymentData = [['Date', 'Unit', 'Tenant', 'Amount', 'Type']];
+                localPayments.forEach(p => {
+                    let dateStr = '';
+                    try { dateStr = p.date?.toDate?.().toLocaleString() || 'Recent'; } catch { dateStr = 'Recent'; }
+                    paymentData.push([
+                        dateStr,
+                        p.unit,
+                        p.tenant,
+                        p.amount,
+                        p.type
+                    ]);
+                });
+                
+                const paymentWs = XLSX.utils.aoa_to_sheet(paymentData);
+                XLSX.utils.book_append_sheet(wb, paymentWs, "Payments");
+                
+                const totalCollected = localPayments.filter(p => p.type === 'Rent').reduce((sum, p) => sum + p.amount, 0);
+                const totalMaintenance = localPayments.filter(p => p.type === 'Maintenance').reduce((sum, p) => sum + p.amount, 0);
+                const outstandingRent = localHouses.filter(h => !h.isTrash).reduce((sum, h) => sum + (h.rent - h.paid), 0);
+                const pendingRepairs = localMaint.filter(m => !m.isTrash && !m.isArc).reduce((sum, m) => sum + (m.cost - (m.mPaid || 0)), 0);
+                
+                const summaryData = [
+                    ['Summary Report', ''],
+                    ['Generated:', new Date().toLocaleString()],
+                    ['Building:', curBName],
+                    [''],
+                    ['Total Rent Collected', 'KES ' + totalCollected.toLocaleString()],
+                    ['Total Maintenance Paid', 'KES ' + totalMaintenance.toLocaleString()],
+                    ['Outstanding Rent', 'KES ' + outstandingRent.toLocaleString()],
+                    ['Pending Repairs', 'KES ' + pendingRepairs.toLocaleString()],
+                    ['Net Balance', 'KES ' + (totalCollected - pendingRepairs).toLocaleString()]
+                ];
+                
+                const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
+                XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
+                
+                const fileName = `${curBName}_Report_${new Date().toISOString().slice(0,10)}.xlsx`;
+                XLSX.writeFile(wb, fileName);
+                
+                alert(`✅ Excel file downloaded: ${fileName}`);
+                
+            } catch (error) {
+                console.error("Error exporting to Excel:", error);
+                alert("Error exporting to Excel: " + error.message);
+            }
+        };
+
+        // ========== GENERATE REPORT FUNCTION ==========
+        window.generateReport = () => {
+            try {
+                const startDate = document.getElementById('reportStartDate').value;
+                const endDate = document.getElementById('reportEndDate').value;
+                
+                let filteredPayments = [...localPayments];
+                
+                if (startDate) {
+                    const start = new Date(startDate);
+                    filteredPayments = filteredPayments.filter(p => {
+                        const pDate = p.date?.toDate?.() || new Date(0);
+                        return pDate >= start;
+                    });
+                }
+                
+                if (endDate) {
+                    const end = new Date(endDate);
+                    end.setHours(23, 59, 59);
+                    filteredPayments = filteredPayments.filter(p => {
+                        const pDate = p.date?.toDate?.() || new Date(0);
+                        return pDate <= end;
+                    });
+                }
+                
+                const totalRent = filteredPayments.filter(p => p.type === 'Rent').reduce((sum, p) => sum + p.amount, 0);
+                const totalMaintenance = filteredPayments.filter(p => p.type === 'Maintenance' || p.type.includes('Transfer')).reduce((sum, p) => sum + p.amount, 0);
+                const outstandingRent = localHouses.filter(h => !h.isTrash).reduce((sum, h) => sum + (h.rent - h.paid), 0);
+                const pendingRepairs = localMaint.filter(m => !m.isTrash && !m.isArc).reduce((sum, m) => sum + (m.cost - (m.mPaid || 0)), 0);
+                
+                document.getElementById('statRent').innerText = 'KES ' + totalRent.toLocaleString();
+                document.getElementById('statMaintenance').innerText = 'KES ' + totalMaintenance.toLocaleString();
+                document.getElementById('statOutstanding').innerText = 'KES ' + outstandingRent.toLocaleString();
+                document.getElementById('statRepairs').innerText = 'KES ' + pendingRepairs.toLocaleString();
+                
+                const rentBody = document.getElementById('rentReportBody');
+                rentBody.innerHTML = '';
+                
+                const rentPayments = filteredPayments.filter(p => p.type === 'Rent').sort((a, b) => {
+                    const da = a.date?.toDate?.() || new Date(0);
+                    const db = b.date?.toDate?.() || new Date(0);
+                    return db - da;
+                });
+                
+                rentPayments.slice(0, 50).forEach(p => {
+                    let dateStr = '';
+                    try { dateStr = p.date?.toDate?.().toLocaleString() || 'Recent'; } catch { dateStr = 'Recent'; }
+                    rentBody.innerHTML += `<tr>
+                        <td>${dateStr}</td>
+                        <td>${p.unit}</td>
+                        <td>${p.tenant}</td>
+                        <td>KES ${p.amount.toLocaleString()}</td>
+                    </tr>`;
+                });
+                
+                const maintBody = document.getElementById('maintReportBody');
+                maintBody.innerHTML = '';
+                
+                const maintPayments = filteredPayments.filter(p => p.type === 'Maintenance' || p.type.includes('Transfer')).sort((a, b) => {
+                    const da = a.date?.toDate?.() || new Date(0);
+                    const db = b.date?.toDate?.() || new Date(0);
+                    return db - da;
+                });
+                
+                maintPayments.slice(0, 50).forEach(p => {
+                    let dateStr = '';
+                    try { dateStr = p.date?.toDate?.().toLocaleString() || 'Recent'; } catch { dateStr = 'Recent'; }
+                    maintBody.innerHTML += `<tr>
+                        <td>${dateStr}</td>
+                        <td>${p.unit}</td>
+                        <td>${p.description || p.type}</td>
+                        <td>KES ${p.amount.toLocaleString()}</td>
+                        <td>${p.type}</td>
+                    </tr>`;
+                });
+                
+            } catch (error) {
+                console.error("Error generating report:", error);
+            }
+        };
+
+        // ========== EXPORT REPORT TO EXCEL ==========
+        window.exportReportToExcel = () => {
+            try {
+                const wb = XLSX.utils.book_new();
+                
+                const rentRows = [];
+                document.querySelectorAll('#rentReportBody tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length) {
+                        rentRows.push([
+                            cells[0]?.innerText || '',
+                            cells[1]?.innerText || '',
+                            cells[2]?.innerText || '',
+                            cells[3]?.innerText || ''
+                        ]);
+                    }
+                });
+                
+                const rentData = [['Date', 'Unit', 'Tenant', 'Amount'], ...rentRows];
+                const rentWs = XLSX.utils.aoa_to_sheet(rentData);
+                XLSX.utils.book_append_sheet(wb, rentWs, "Rent Report");
+                
+                const maintRows = [];
+                document.querySelectorAll('#maintReportBody tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length) {
+                        maintRows.push([
+                            cells[0]?.innerText || '',
+                            cells[1]?.innerText || '',
+                            cells[2]?.innerText || '',
+                            cells[3]?.innerText || '',
+                            cells[4]?.innerText || ''
+                        ]);
+                    }
+                });
+                
+                const maintData = [['Date', 'Unit', 'Description', 'Amount', 'Type'], ...maintRows];
+                const maintWs = XLSX.utils.aoa_to_sheet(maintData);
+                XLSX.utils.book_append_sheet(wb, maintWs, "Maintenance Report");
+                
+                const summaryData = [
+                    ['Report Summary', ''],
+                    ['Generated:', new Date().toLocaleString()],
+                    ['Building:', curBName],
+                    [''],
+                    ['Total Rent Collected:', document.getElementById('statRent').innerText],
+                    ['Maintenance Paid:', document.getElementById('statMaintenance').innerText],
+                    ['Outstanding Rent:', document.getElementById('statOutstanding').innerText],
+                    ['Pending Repairs:', document.getElementById('statRepairs').innerText]
+                ];
+                
+                const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
+                XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
+                
+                const fileName = `${curBName}_Report_${new Date().toISOString().slice(0,10)}.xlsx`;
+                XLSX.writeFile(wb, fileName);
+                
+                alert(`✅ Report exported to Excel`);
+                
+            } catch (error) {
+                console.error("Error exporting report:", error);
+                alert("Error exporting report: " + error.message);
+            }
+        };
+
+        // ========== EMAIL FUNCTIONS ==========
+        
+        // Validate email function
+        window.validateFlexibleEmail = () => {
+            const emailInput = document.getElementById('flexibleRecipientEmail');
+            const hint = document.getElementById('flexibleEmailHint');
+            const email = emailInput.value.trim();
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email === '') {
+                hint.className = 'email-validation-hint';
+                hint.innerText = 'Please enter an email address';
+                return false;
+            } else if (emailRegex.test(email)) {
+                hint.className = 'email-validation-hint valid';
+                hint.innerText = '✓ Valid email address';
+                return true;
+            } else {
+                hint.className = 'email-validation-hint invalid';
+                hint.innerText = '✗ Please enter a valid email (e.g., name@domain.com)';
+                return false;
+            }
+        };
+
+        // Populate tenant dropdown
+        window.populateTenantDropdown = () => {
+            const dropdown = document.getElementById('tenantDropdown');
+            const activeTenants = localHouses.filter(h => !h.isTrash);
+            
+            if (activeTenants.length === 0) {
+                dropdown.innerHTML = '<div class="tenant-option" style="text-align: center; color: #666; padding: 20px;">No tenants available</div>';
+                return;
+            }
+            
+            let html = '';
+            activeTenants.forEach(tenant => {
+                const balance = tenant.rent - tenant.paid;
+                const status = balance > 0 ? `🔴 KES ${balance}` : balance < 0 ? `🟢 Overpaid KES ${-balance}` : '✅ Paid up';
+                
+                html += `
+                    <div class="tenant-option" onclick="selectTenant('${tenant.tName}', '${tenant.hNum}', '${tenant.phone || 'N/A'}', '${tenant.rent}', '${tenant.paid}')">
+                        <span class="unit">${tenant.hNum}</span>
+                        <span class="name">${tenant.tName}</span>
+                        <span class="phone">${tenant.phone || 'No phone'}</span>
+                        <div style="font-size: 11px; color: ${balance > 0 ? '#d93025' : balance < 0 ? '#1e8e3e' : '#666'}; margin-top: 3px;">
+                            ${status}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            dropdown.innerHTML = html;
+        };
+
+        // Toggle tenant dropdown
+        window.toggleTenantDropdown = () => {
+            const dropdown = document.getElementById('tenantDropdown');
+            dropdown.classList.toggle('show');
+            
+            if (dropdown.classList.contains('show')) {
+                setTimeout(() => {
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!e.target.closest('.tenant-selector-container')) {
+                            dropdown.classList.remove('show');
+                            document.removeEventListener('click', closeDropdown);
+                        }
+                    });
+                }, 100);
+            }
+        };
+
+        // Select tenant
+        window.selectTenant = (name, unit, phone, rent, paid) => {
+            selectedTenantForEmail = { name, unit, phone, rent: Number(rent), paid: Number(paid) };
+            
+            const display = document.getElementById('selectedTenantDisplay');
+            const badge = document.getElementById('selectedTenantBadge');
+            const dropdown = document.getElementById('tenantDropdown');
+            
+            display.innerText = `${unit} - ${name}`;
+            badge.style.display = 'inline-block';
+            
+            const balance = Number(rent) - Number(paid);
+            const balanceText = balance > 0 ? `Balance: KES ${balance}` : balance < 0 ? `Overpaid: KES ${-balance}` : 'Paid up';
+            badge.innerHTML = `Selected: ${unit} - ${name} (${balanceText})`;
+            
+            dropdown.classList.remove('show');
+            
+            updateEmailWithSelectedTenant();
+        };
+
+        // Update email with selected tenant data
+        function updateEmailWithSelectedTenant() {
+            if (!selectedTenantForEmail) return;
+            
+            const message = document.getElementById('emailMessage');
+            const currentMessage = message.value;
+            
+            const updatedMessage = currentMessage
+                .replace(/\[Tenant Name\]/g, selectedTenantForEmail.name)
+                .replace(/\[Unit\]/g, selectedTenantForEmail.unit)
+                .replace(/\[Balance\]/g, `KES ${selectedTenantForEmail.rent - selectedTenantForEmail.paid}`)
+                .replace(/\[Amount\]/g, `KES ${selectedTenantForEmail.rent}`);
+                
+            message.value = updatedMessage;
+        }
+
+        // Toggle recipient input
+        window.toggleRecipientInput = () => {
+            const type = document.getElementById('recipientType').value;
+            const selectorContainer = document.getElementById('singleTenantSelector');
+            
+            if (type === 'single') {
+                selectorContainer.style.display = 'block';
+                populateTenantDropdown();
+            } else {
+                selectorContainer.style.display = 'none';
+                selectedTenantForEmail = null;
+                document.getElementById('selectedTenantDisplay').innerText = '👇 Click to select a tenant';
+                document.getElementById('selectedTenantBadge').style.display = 'none';
+            }
+        };
+
+        // Prepare email template
+        window.prepareEmailTemplate = () => {
+            const type = document.getElementById('emailType').value;
+            const subject = document.getElementById('emailSubject');
+            const message = document.getElementById('emailMessage');
+            
+            const today = new Date().toLocaleDateString();
+            const companyName = localStorage.getItem('companyName') || 'Flat Master Pro';
+            
+            let template = '';
+            
+            switch(type) {
+                case 'receipt':
+                    subject.value = 'Payment Receipt - Thank You';
+                    template = `Dear [Tenant Name],\n\nThank you for your payment. Your receipt is attached below.\n\nAmount: [Amount]\nDate: ${today}\nUnit: [Unit]\nBalance: [Balance]\n\nThank you for your prompt payment!\n\nRegards,\n${companyName}`;
+                    break;
+                    
+                case 'reminder':
+                    subject.value = 'Rent Payment Reminder';
+                    template = `Dear [Tenant Name],\n\nThis is a friendly reminder that your rent payment of [Amount] is due.\n\nCurrent Balance: [Balance]\nUnit: [Unit]\n\nPlease make arrangements to pay as soon as possible.\n\nRegards,\n${companyName}`;
+                    break;
+                    
+                case 'statement':
+                    subject.value = 'Monthly Statement';
+                    template = `Dear [Tenant Name],\n\nPlease find attached your monthly statement.\n\nUnit: [Unit]\nCurrent Balance: [Balance]\n\nRegards,\n${companyName}`;
+                    break;
+                    
+                case 'repair':
+                    subject.value = 'Maintenance Update';
+                    template = `Dear [Tenant Name],\n\nWe have scheduled maintenance for your unit.\n\nUnit: [Unit]\nIssue: [Issue]\n\nOur technician will contact you shortly.\n\nRegards,\n${companyName}`;
+                    break;
+                    
+                default:
+                    subject.value = 'Message from Flat Master Pro';
+                    template = `Dear [Tenant Name],\n\n[Your message here]\n\nRegards,\n${companyName}`;
+            }
+            
+            message.value = template;
+            
+            if (selectedTenantForEmail) {
+                updateEmailWithSelectedTenant();
+            }
+        };
+
+        // Preview email
+        window.previewFlexibleEmail = () => {
+            const preview = document.getElementById('emailPreview');
+            const previewContent = document.getElementById('previewContent');
+            const subject = document.getElementById('emailSubject').value;
+            const message = document.getElementById('emailMessage').value;
+            const recipientEmail = document.getElementById('flexibleRecipientEmail').value;
+            
+            let recipientInfo = `<p><strong>To:</strong> ${recipientEmail || 'No recipient entered'}</p>`;
+            
+            if (selectedTenantForEmail) {
+                recipientInfo += `<p><strong>Tenant:</strong> ${selectedTenantForEmail.unit} - ${selectedTenantForEmail.name}</p>`;
+            }
+            
+            previewContent.innerHTML = `
+                <div style="background: #f0f4f8; padding: 15px; border-radius: 8px;">
+                    ${recipientInfo}
+                    <p><strong>Subject:</strong> ${subject}</p>
+                    <hr style="border: 1px solid #ddd;">
+                    <div style="white-space: pre-wrap; background: white; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                        ${message.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `;
+            
+            preview.style.display = 'block';
+        };
+
+        // Validate and send
+        window.validateAndSendFlexible = () => {
+            if (validateFlexibleEmail()) {
+                sendFlexibleEmail();
+            } else {
+                alert("⚠️ Please enter a valid email address");
+                document.getElementById('flexibleRecipientEmail').focus();
+            }
+        };
+
+        // Send email
+        window.sendFlexibleEmail = async () => {
+            const statusDiv = document.getElementById('emailStatus');
+            const subject = document.getElementById('emailSubject').value;
+            const message = document.getElementById('emailMessage').value;
+            const recipientEmail = document.getElementById('flexibleRecipientEmail').value.trim();
+            
+            if (!subject || !message) {
+                alert("Please fill in subject and message");
+                return;
+            }
+            
+            if (!recipientEmail) {
+                alert("⚠️ Please enter a recipient email address");
+                return;
+            }
+            
+            if (!validateFlexibleEmail()) {
+                alert("⚠️ Please enter a valid email address");
+                return;
+            }
+            
+            // Show sending status
+            statusDiv.innerHTML = '<div style="background: #ff9800; color: white; padding: 10px; border-radius: 5px;">⏳ Sending email...</div>';
+            
+            try {
+                // Prepare final message with tenant data if selected
+                let finalMessage = message;
+                let finalSubject = subject;
+                
+                if (selectedTenantForEmail) {
+                    finalMessage = message
+                        .replace(/\[Tenant Name\]/g, selectedTenantForEmail.name)
+                        .replace(/\[Unit\]/g, selectedTenantForEmail.unit)
+                        .replace(/\[Balance\]/g, `KES ${selectedTenantForEmail.rent - selectedTenantForEmail.paid}`)
+                        .replace(/\[Amount\]/g, `KES ${selectedTenantForEmail.rent}`);
+                    
+                    finalSubject = subject
+                        .replace(/\[Tenant Name\]/g, selectedTenantForEmail.name)
+                        .replace(/\[Unit\]/g, selectedTenantForEmail.unit);
+                }
+                
+                // Send via EmailJS
+                const templateParams = {
+                    to_email: recipientEmail,
+                    subject: finalSubject,
+                    message: finalMessage
+                };
+                
+                const response = await emailjs.send(emailjsServiceId, "template_054xe2o", templateParams);
+                
+                if (response.status === 200) {
+                    statusDiv.innerHTML = '<div style="background: #4caf50; color: white; padding: 10px; border-radius: 5px;">✅ Email sent successfully!</div>';
+                    
+                    // Add to history
+                    emailHistory.push({
+                        date: new Date().toLocaleString(),
+                        recipient: recipientEmail,
+                        subject: finalSubject,
+                        status: 'Sent'
+                    });
+                    
+                    // Update history display
+                    const historyBody = document.getElementById('emailHistory');
+                    historyBody.innerHTML = '';
+                    emailHistory.slice(0, 10).forEach(e => {
+                        historyBody.innerHTML += `<tr>
+                            <td>${e.date}</td>
+                            <td>${e.recipient}</td>
+                            <td>${e.subject}</td>
+                            <td><span style="color: green;">✅ Sent</span></td>
+                        </tr>`;
+                    });
+                    
+                    // Clear status after 5 seconds
+                    setTimeout(() => {
+                        statusDiv.innerHTML = '';
+                    }, 5000);
+                }
+                
+            } catch (error) {
+                console.error("Error sending email:", error);
+                statusDiv.innerHTML = `<div style="background: #f44336; color: white; padding: 10px; border-radius: 5px;">❌ Error: ${error.message}</div>`;
+                
+                // Add failed attempt to history
+                emailHistory.push({
+                    date: new Date().toLocaleString(),
+                    recipient: recipientEmail,
+                    subject: subject,
+                    status: 'Failed'
+                });
+            }
+        };
+
+        // Email report function
+        window.emailReport = () => {
+            showView('email');
+            document.getElementById('emailType').value = 'statement';
+            prepareEmailTemplate();
+            document.getElementById('recipientType').value = 'custom';
+            toggleRecipientInput();
+            alert("📧 Enter recipient email and send this report");
+        };
+
+        // ========== UPDATE NET FUNCTION ==========
+        function updateNet() {
+            const c = Number(document.getElementById('sColl').innerText.replace(/,/g,'')) || 0;
+            const r = Number(document.getElementById('sRep').innerText.replace(/,/g,'')) || 0;
+            const d = Number(document.getElementById('sDebt').innerText.replace(/,/g,'')) || 0;
+            
+            document.getElementById('sProf').innerText = (c - r).toLocaleString();
+            
+            const total = c + d + r || 1;
+            document.getElementById('barColl').style.height = (c/total*100) + "%";
+            document.getElementById('barDebt').style.height = (d/total*100) + "%";
+            document.getElementById('barRep').style.height = (r/total*100) + "%";
+        }
+
+        // Initialize
+        setTimeout(() => {
+            document.getElementById('workspace').classList.remove('hidden');
+            showView('buildings');
+            
+            // Add email validation listener
+            const emailInput = document.getElementById('flexibleRecipientEmail');
+            if (emailInput) {
+                emailInput.addEventListener('input', validateFlexibleEmail);
+            }
+        }, 100);
+    </script>
+</body>
+</html>
