@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Flat Master Pro - Mobile v12.0</title>
+    <title>Flat Master Pro - Elite v12.0 (Ultimate)</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -13,8 +13,6 @@
             --card-dark: #2a2a2a; --accent: #1a73e8; --danger: #d93025; 
             --success: #1e8e3e; --warning: #f9ab00; --v: #673ab7;
             --text-light: #ffffff; --text-muted: #aaaaaa; --report: #ff9800;
-            --safe-top: env(safe-area-inset-top);
-            --safe-bottom: env(safe-area-inset-bottom);
         }
 
         * {
@@ -31,63 +29,36 @@
             overflow: hidden; 
             background: var(--main-bg); 
             color: #202124; 
-            position: fixed;
-            width: 100%;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* LOGIN PANE STYLES */
+        /* LOGIN PANE STYLES - ORIGINAL COLORS */
         #login-overlay {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, #2a2a2a 0%, #111 100%);
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 2000;
+            display: flex; align-items: center; justify-content: center; z-index: 2000;
             transition: 0.5s;
             padding: 20px;
         }
         .login-card {
-            background: white; 
-            padding: 30px 20px; 
-            border-radius: 16px; 
-            width: 100%;
+            background: white; padding: 40px 20px; border-radius: 12px; width: 100%;
             max-width: 350px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center;
         }
-        .login-card h2 { 
-            margin-top: 0; 
-            color: #333; 
-            font-size: 24px;
-        }
-        .login-card input { 
-            width: 100%; 
-            margin-bottom: 15px; 
-            padding: 14px;
-            font-size: 16px;
-            border-radius: 8px;
-        }
-        .reset-link { 
-            font-size: 13px; 
-            color: var(--accent); 
-            cursor: pointer; 
-            text-decoration: underline; 
-            padding: 8px;
-        }
+        .login-card h2 { margin-top: 0; color: #333; }
+        .login-card input { width: 100%; margin-bottom: 15px; box-sizing: border-box; padding: 10px; }
+        .reset-link { font-size: 12px; color: var(--accent); cursor: pointer; text-decoration: underline; }
         #otpStatus { 
             font-size: 14px; 
             margin-top: 15px; 
-            padding: 12px; 
-            border-radius: 8px; 
+            padding: 10px; 
+            border-radius: 5px; 
             font-weight: 500;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        /* SIDEBAR NAVIGATION - MOBILE OPTIMIZED */
+        /* SIDEBAR NAVIGATION - ORIGINAL COLORS */
         .sidebar { 
             width: 70px; 
             background: var(--side-bg); 
@@ -107,7 +78,7 @@
         }
         
         .side-header { 
-            padding: 15px 10px; 
+            padding: 20px 10px; 
             font-size: 14px; 
             font-weight: bold; 
             background: var(--header-bg); 
@@ -115,11 +86,8 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
+            color: var(--text-light);
             white-space: nowrap;
-        }
-        
-        .side-header span {
-            transform: scale(0.9);
         }
         
         .side-nav { 
@@ -159,11 +127,7 @@
         .nav-item.active { 
             background: #333; 
             color: white; 
-            border-left: 3px solid var(--accent); 
-        }
-        
-        .nav-item span:first-child {
-            font-size: 20px;
+            border-left: 4px solid var(--accent); 
         }
 
         /* MAIN LAYOUT */
@@ -173,53 +137,41 @@
             flex-direction: column; 
             position: relative; 
             width: calc(100% - 70px);
-            overflow: hidden;
         }
         
         .header { 
-            min-height: 55px; 
+            min-height: 60px; 
             background: var(--header-bg); 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            padding: 8px 12px; 
+            padding: 0 12px; 
             color: white; 
             border-bottom: 1px solid #333; 
             flex-wrap: wrap;
-            gap: 5px;
-        }
-        
-        .header > div:first-child {
-            font-size: 14px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        
-        .header > div:last-child {
-            gap: 5px;
         }
         
         .main-content { 
             flex-grow: 1; 
             overflow-y: auto; 
-            padding: 12px; 
+            padding: 15px; 
             box-sizing: border-box; 
             -webkit-overflow-scrolling: touch;
         }
 
-        /* DASHBOARD GRID TILES */
+        /* DASHBOARD GRID TILES - ORIGINAL COLORS */
         .dashboard-grid { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
             gap: 10px; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
         }
         
         .tile { 
             background: var(--card-dark); 
             color: white; 
-            border-radius: 8px; 
-            padding: 20px 10px; 
+            border-radius: 4px; 
+            padding: 25px 10px; 
             text-align: center; 
             border-left: 4px solid var(--accent); 
             cursor: pointer; 
@@ -227,28 +179,29 @@
         }
         
         .tile:active { 
-            transform: scale(0.98); 
+            transform: translateY(-3px); 
             background: #333; 
         }
         
         .tile-icon { 
-            font-size: 24px; 
-            margin-bottom: 5px; 
+            font-size: 28px; 
+            margin-bottom: 10px; 
             display: block; 
         }
         
         .tile-title { 
-            font-size: 13px; 
+            font-size: 14px; 
             font-weight: 500; 
+            color: white;
         }
 
-        /* BAR CHART CSS */
+        /* BAR CHART CSS - ORIGINAL COLORS */
         .chart-container { 
             display: flex; 
             align-items: flex-end; 
             gap: 15px; 
-            height: 120px; 
-            padding: 15px; 
+            height: 150px; 
+            padding: 20px; 
             background: #fff; 
             border: 1px solid #ddd; 
             border-radius: 8px; 
@@ -280,13 +233,13 @@
             font-weight: bold; 
         }
 
-        /* CARDS & TABLES */
+        /* CARDS & TABLES - ORIGINAL COLORS */
         .card { 
             background: white; 
-            border-radius: 12px; 
+            border-radius: 8px; 
             border: 1px solid #dadce0; 
             padding: 15px; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
         }
         
@@ -304,7 +257,7 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            font-size: 12px; 
+            font-size: 13px; 
             display: block;
             overflow-x: auto;
             white-space: nowrap;
@@ -314,42 +267,38 @@
         th { 
             background: #f8f9fa; 
             color: #5f6368; 
-            padding: 10px 8px; 
+            padding: 12px 8px; 
             text-align: left; 
             border-bottom: 2px solid #eee; 
         }
         
         td { 
-            padding: 10px 8px; 
+            padding: 12px 8px; 
             border-bottom: 1px solid #eee; 
+            color: #202124;
         }
 
-        /* BUILDING CHIPS */
+        /* BUILDING CHIPS - ORIGINAL COLORS */
         .b-nav { 
             display: flex; 
-            gap: 8px; 
-            margin-bottom: 15px; 
+            gap: 12px; 
+            margin-bottom: 20px; 
             overflow-x: auto; 
-            padding: 5px 0 10px; 
+            padding: 10px 5px; 
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        
-        .b-nav::-webkit-scrollbar {
-            display: none;
         }
         
         .chip { 
-            padding: 10px 16px; 
+            padding: 12px 20px; 
             background: linear-gradient(145deg, #ffffff, #f0f0f0); 
             border: 1px solid #ddd; 
-            border-radius: 20px; 
+            border-radius: 12px; 
             cursor: pointer; 
             white-space: nowrap; 
-            font-size: 13px; 
-            font-weight: 600; 
+            font-size: 14px; 
+            font-weight: 700; 
             color: #444; 
-            box-shadow: 2px 2px 4px #d1d1d1; 
+            box-shadow: 4px 4px 8px #d1d1d1; 
             transition: 0.3s; 
         }
         
@@ -357,14 +306,14 @@
             background: var(--accent); 
             color: white; 
             border-color: var(--accent); 
-            transform: scale(1.02); 
+            transform: scale(1.05); 
         }
 
-        /* UI ELEMENTS */
+        /* UI ELEMENTS - ORIGINAL COLORS */
         .btn { 
-            padding: 10px 12px; 
+            padding: 8px 12px; 
             border: none; 
-            border-radius: 8px; 
+            border-radius: 4px; 
             cursor: pointer; 
             font-weight: 600; 
             font-size: 12px; 
@@ -375,14 +324,20 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            touch-action: manipulation;
         }
+        .btn-p { background: var(--accent); } 
+        .btn-s { background: var(--success); } 
+        .btn-d { background: var(--danger); } 
+        .btn-w { background: var(--warning); color: black; }
+        .btn-v { background: var(--v); } 
+        .btn-fetch { background: #ff6b6b; } 
+        .btn-report { background: var(--report); }
         
         .form-row { 
             display: grid; 
             grid-template-columns: 1fr; 
-            gap: 10px; 
-            margin: 10px 0; 
+            gap: 12px; 
+            margin: 15px 0; 
         }
         
         @media (min-width: 400px) {
@@ -392,9 +347,9 @@
         }
         
         input, select, textarea { 
-            padding: 14px 12px; 
+            padding: 12px 10px; 
             border: 1px solid #dadce0; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             outline: none; 
             font-size: 16px;
             width: 100%;
@@ -407,36 +362,34 @@
         .loc-badge { 
             background: #e8f0fe; 
             color: var(--accent); 
-            padding: 4px 10px; 
-            border-radius: 16px; 
-            font-size: 11px; 
+            padding: 4px 12px; 
+            border-radius: 12px; 
+            font-size: 12px; 
             font-weight: normal; 
             border: 1px solid #c2e7ff; 
-            white-space: nowrap;
         }
 
-        /* OVERPAYMENT INDICATOR */
+        /* OVERPAYMENT INDICATOR - ORIGINAL COLORS */
         .overpayment-badge { 
             background: #ff6b6b; 
             color: white; 
-            padding: 2px 6px; 
+            padding: 2px 8px; 
             border-radius: 12px; 
-            font-size: 10px; 
-            margin-left: 5px; 
-            white-space: nowrap;
+            font-size: 11px; 
+            margin-left: 8px; 
         }
 
-        /* REPORTS SECTION */
+        /* REPORTS SECTION - ORIGINAL COLORS */
         .report-filters { 
             background: #f5f5f5; 
-            padding: 12px; 
+            padding: 15px; 
             border-radius: 8px; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
         }
         
         .date-input-group { 
             display: flex; 
-            gap: 8px; 
+            gap: 10px; 
             align-items: center; 
             flex-wrap: wrap; 
         }
@@ -444,14 +397,13 @@
         .date-input-group input {
             flex: 1;
             min-width: 120px;
-            padding: 12px;
         }
         
         .stats-grid { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
             gap: 10px; 
-            margin: 15px 0; 
+            margin: 20px 0; 
         }
         
         .stat-card { 
@@ -461,25 +413,29 @@
             border-radius: 10px; 
             text-align: center; 
         }
+        .stat-card:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-card:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stat-card:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
         
         .stat-number { 
-            font-size: 20px; 
+            font-size: 24px; 
             font-weight: bold; 
-            margin: 8px 0; 
-            word-break: break-word;
+            margin: 10px 0; 
+            color: white;
         }
         
         .stat-label { 
-            font-size: 12px; 
+            font-size: 14px; 
             opacity: 0.9; 
+            color: white;
         }
 
-        /* EMAIL SECTION */
+        /* EMAIL SECTION - ORIGINAL COLORS */
         .email-composer { 
             background: #f0f4f8; 
-            padding: 15px; 
+            padding: 20px; 
             border-radius: 8px; 
-            margin-top: 15px; 
+            margin-top: 20px; 
         }
         
         .email-preview { 
@@ -496,12 +452,12 @@
             white-space: pre-wrap; 
             font-family: monospace; 
             background: #f5f5f5; 
-            padding: 12px; 
+            padding: 15px; 
             border-radius: 5px; 
-            font-size: 13px;
+            color: #202124;
         }
         
-        /* TENANT SELECTOR DROPDOWN */
+        /* TENANT SELECTOR DROPDOWN - ORIGINAL COLORS */
         .tenant-selector-container {
             position: relative;
             width: 100%;
@@ -509,7 +465,7 @@
         
         .tenant-selector-button {
             width: 100%;
-            padding: 14px 12px;
+            padding: 12px;
             background: white;
             border: 2px solid var(--accent);
             border-radius: 8px;
@@ -519,7 +475,17 @@
             justify-content: space-between;
             align-items: center;
             font-size: 14px;
-            min-height: 50px;
+            color: #202124;
+        }
+        
+        .tenant-selector-button:hover {
+            background: #f0f7ff;
+            border-color: #0d47a1;
+        }
+        
+        .tenant-selector-button .arrow {
+            color: var(--accent);
+            font-size: 12px;
         }
         
         .tenant-dropdown {
@@ -544,59 +510,114 @@
         }
         
         .tenant-option {
-            padding: 15px;
+            padding: 12px 15px;
             cursor: pointer;
             border-bottom: 1px solid #eee;
+            transition: 0.2s;
+            color: #202124;
         }
         
-        .tenant-option:active {
+        .tenant-option:hover {
             background: var(--accent);
             color: white;
         }
         
-        .selected-tenant-badge { 
-            background: var(--success); 
-            color: white; 
-            padding: 8px 12px; 
-            border-radius: 20px; 
-            font-size: 12px; 
-            display: inline-block; 
-            margin-top: 8px; 
-            width: 100%;
-            text-align: center;
-        }
-
-        /* RECEIPT/STATEMENT PRINT STYLES */
-        #printArea, #statementArea { 
-            display: none; 
+        .tenant-option:last-child {
+            border-bottom: none;
         }
         
-        @media print {
-            @page { 
-                size: A4 portrait; 
-                margin: 0.3in; 
-            }
-            body * { 
-                visibility: hidden; 
-            }
-            #printArea, #printArea *, #statementArea, #statementArea * { 
-                visibility: visible; 
-            }
-            #printArea, #statementArea { 
-                display: block !important; 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 100%; 
-                background: white !important; 
-            }
+        .tenant-option .unit {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .tenant-option:hover .unit {
+            color: white;
+        }
+        
+        .tenant-option .name {
+            margin-left: 8px;
+            color: #202124;
+        }
+        
+        .tenant-option:hover .name {
+            color: white;
+        }
+        
+        .tenant-option .phone {
+            font-size: 11px;
+            color: #666;
+            margin-left: 8px;
+        }
+        
+        .tenant-option:hover .phone {
+            color: #ddd;
+        }
+        
+        .selected-tenant-badge {
+            background: var(--success);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 5px;
         }
 
-        /* Mobile-specific adjustments */
+        /* RECEIPT PRINT STYLES - ORIGINAL COLORS */
+        #printArea, #statementArea { display: none; }
+        
+        @media print {
+            @page { size: A4 portrait; margin: 0.5in; }
+            body * { visibility: hidden; }
+            #printArea, #printArea *, #statementArea, #statementArea * { visibility: visible; }
+            #printArea, #statementArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: white !important; }
+            
+            .receipt-container, .statement-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+            
+            .receipt-header, .statement-header { 
+                text-align: center; border-bottom: 3px solid #1a73e8; padding-bottom: 20px; margin-bottom: 20px;
+                background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); color: white; padding: 30px; border-radius: 8px;
+            }
+            .statement-header { background: linear-gradient(135deg, #673ab7 0%, #512da8 100%); }
+            
+            .receipt-info { display: flex; justify-content: space-between; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+            
+            .tenant-details { background: #e8f0fe; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 6px solid #34a853; }
+            .detail-row { display: flex; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+            .detail-label { font-weight: 600; width: 150px; color: #555; }
+            
+            .finance-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            .finance-table th { background: #1a73e8; color: white; padding: 12px; }
+            .finance-table td { padding: 10px; border-bottom: 1px solid #ddd; }
+            .finance-table tr:nth-child(even) { background: #f8f9fa; }
+            
+            .amount-positive { color: #34a853; font-weight: 600; }
+            .amount-negative { color: #ea4335; font-weight: 600; }
+            
+            .summary-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+            .summary-item { background: #f8f9fa; padding: 15px; text-align: center; border-radius: 8px; border-top: 4px solid; }
+            .summary-item.paid { border-top-color: #34a853; }
+            .summary-item.balance { border-top-color: #f9ab00; }
+            .summary-item.total { border-top-color: #1a73e8; }
+            
+            .payment-history { background: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .payment-item { background: white; padding: 10px; margin-bottom: 8px; border-radius: 4px; border-left: 4px solid #f9ab00; }
+            
+            .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #1a73e8; display: flex; justify-content: space-between; }
+            .signature-line { display: inline-block; width: 200px; border-bottom: 2px solid #000; margin-bottom: 5px; }
+            
+            .statement-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            .statement-table th { background: #ede7f6; color: #512da8; padding: 12px; }
+            .statement-table td { padding: 10px; border-bottom: 1px solid #d1c4e9; }
+            .net-total { text-align: right; font-size: 20px; margin-top: 20px; padding: 20px; background: #ede7f6; border-radius: 8px; }
+        }
+
+        /* Mobile-specific layout fixes - preserving original colors */
         #activeLedger > div {
             flex-direction: column;
             align-items: flex-start !important;
-            gap: 8px;
+            gap: 10px;
         }
         
         #activeLedger > div > div {
@@ -608,13 +629,12 @@
         #activeLedger button,
         #mActive button,
         #mArchive button {
-            padding: 10px;
+            padding: 8px 10px;
             min-width: 70px;
-            font-size: 11px;
         }
         
         .header button {
-            padding: 8px 10px;
+            padding: 6px 8px;
             min-width: auto;
         }
         
@@ -635,27 +655,26 @@
             }
             
             .chip.active {
-                transform: scale(1.02);
+                transform: scale(1.05);
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Your existing HTML content remains exactly the same from here down -->
     <div id="login-overlay">
         <div class="login-card">
             <h2 id="loginTitle">🔑 System Login</h2>
             <p style="font-size: 13px; color: #666;">Enter administrative password</p>
             <input type="password" id="loginPass" placeholder="Password">
-            <button id="loginBtn" class="btn btn-p" style="width:100%;" onclick="verifyLogin()">Access Dashboard</button>
+            <button id="loginBtn" class="btn btn-p" style="width:100%; padding: 12px;" onclick="verifyLogin()">Access Dashboard</button>
             <p class="reset-link" onclick="resetPasswordRequest()">Forgot Password? Get OTP</p>
             <div id="otpStatus" style="font-size: 14px; margin-top: 15px;"></div>
         </div>
     </div>
 
     <div class="sidebar">
-        <div class="side-header"><span>🏢</span></div>
+        <div class="side-header"><span>🏢 FLAT MASTER</span></div>
         <div class="side-nav">
             <div class="nav-item" onclick="showView('dash')"><span>📊</span><span>Dashboard</span></div>
             <div class="nav-item" onclick="showView('buildings')"><span>🏢</span><span>Buildings</span></div>
@@ -665,22 +684,22 @@
             <div class="nav-item" onclick="showView('email')"><span>📧</span><span>Email</span></div>
             <div class="nav-item" onclick="showView('settings')"><span>⚙️</span><span>Settings</span></div>
         </div>
-        <div style="padding: 8px;">
-            <button class="btn btn-w" style="width:100%; margin-bottom:5px; font-size:11px; padding:8px;" onclick="secureRemoveBuilding()">🔐 Wipe</button>
-            <button class="btn btn-d" style="width:100%; font-size:11px; padding:8px;" onclick="deleteBuildingForever()">🗑️ Delete</button>
+        <div style="padding: 10px 20px;">
+            <button class="btn btn-w" style="width:100%; margin-bottom:5px;" onclick="secureRemoveBuilding()">🔐 Admin Wipe</button>
+            <button class="btn btn-d" style="width:100%" onclick="deleteBuildingForever()">🗑️ Delete Building</button>
         </div>
     </div>
 
     <div class="wrapper">
         <div class="header">
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span id="wsTitle" style="font-size: 14px; font-weight: bold;">Property</span>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span id="wsTitle" style="font-size: 18px; font-weight: bold; color: white;">Property Console</span>
                 <span id="wsLoc" class="loc-badge"></span>
             </div>
-            <div style="display:flex; gap:5px;">
-                <button class="btn btn-s" style="padding:6px 8px; font-size:11px;" onclick="genStatement()">📊</button>
-                <button class="btn btn-report" style="padding:6px 8px; font-size:11px;" onclick="exportToExcel()">📥</button>
-                <button class="btn btn-d" style="padding:6px 8px; font-size:11px;" onclick="location.reload()">🚪</button>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-s" onclick="genStatement()">📊 Building Statement</button>
+                <button class="btn btn-report" onclick="exportToExcel()">📥 Export Excel</button>
+                <button class="btn btn-d" onclick="location.reload()">Logout</button>
             </div>
         </div>
 
@@ -699,10 +718,10 @@
 
                     <div class="card">
                         <h3>Financial Summary</h3>
-                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); text-align:center; padding: 5px;">
-                            <div><h4 style="color:#16cf3e; font-size:12px; margin:5px 0;">Collected</h4><p id="sColl" style="font-size:16px; font-weight:bold; color:var(--success); margin:5px 0;">0</p></div>
-                            <div><h4 style="color:#b90c9f; font-size:12px; margin:5px 0;">Outstanding</h4><p id="sDebt" style="font-size:16px; font-weight:bold; color:var(--danger); margin:5px 0;">0</p></div>
-                            <div><h4 style="color:#6014da; font-size:12px; margin:5px 0;">Repairs</h4><p id="sRep" style="font-size:16px; font-weight:bold; color:var(--warning); margin:5px 0;">0</p></div>
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); text-align:center; padding: 10px;">
+                            <div><h4 style="color:#16cf3e">Collected</h4><p id="sColl" style="font-size:22px; font-weight:bold; color:var(--success);">0</p></div>
+                            <div><h4 style="color:#b90c9f">Outstanding</h4><p id="sDebt" style="font-size:22px; font-weight:bold; color:var(--danger);">0</p></div>
+                            <div><h4 style="color:#6014da">Repairs</h4><p id="sRep" style="font-size:22px; font-weight:bold; color:var(--warning);">0</p></div>
                         </div>
                         <div class="chart-container">
                             <div class="bar-wrapper"><div id="barColl" class="bar" style="background:var(--success); height:0%;"></div><div class="bar-label">Collected</div></div>
@@ -794,28 +813,28 @@
                         <h3>📈 Financial Reports</h3>
                         
                         <div class="report-filters">
-                            <h4 style="margin:0 0 10px 0; font-size:14px;">Filter by Date</h4>
+                            <h4>Filter by Date Range</h4>
                             <div class="date-input-group">
                                 <input type="date" id="reportStartDate">
                                 <span>to</span>
                                 <input type="date" id="reportEndDate">
-                                <button class="btn btn-p" style="width:100%; margin-top:8px;" onclick="generateReport()">Generate</button>
-                                <button class="btn btn-s" style="width:100%;" onclick="exportReportToExcel()">Export</button>
-                                <button class="btn btn-v" style="width:100%;" onclick="emailReport()">📧 Email</button>
+                                <button class="btn btn-p" onclick="generateReport()">Generate Report</button>
+                                <button class="btn btn-s" onclick="exportReportToExcel()">Export to Excel</button>
+                                <button class="btn btn-v" onclick="emailReport()">📧 Email Report</button>
                             </div>
                         </div>
 
                         <div class="stats-grid" id="reportStats">
                             <div class="stat-card">
-                                <div class="stat-label">Total Rent</div>
+                                <div class="stat-label">Total Rent Collected</div>
                                 <div class="stat-number" id="statRent">KES 0</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-label">Maintenance</div>
+                                <div class="stat-label">Maintenance Paid</div>
                                 <div class="stat-number" id="statMaintenance">KES 0</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-label">Outstanding</div>
+                                <div class="stat-label">Outstanding Rent</div>
                                 <div class="stat-number" id="statOutstanding">KES 0</div>
                             </div>
                             <div class="stat-card">
@@ -824,8 +843,8 @@
                             </div>
                         </div>
 
-                        <div style="margin-top: 15px;">
-                            <h4 style="font-size:14px;">Rent Collection</h4>
+                        <div style="margin-top: 20px;">
+                            <h4>Rent Collection Report</h4>
                             <div style="overflow-x: auto;">
                                 <table id="rentReportTable">
                                     <thead>
@@ -841,8 +860,8 @@
                             </div>
                         </div>
 
-                        <div style="margin-top: 15px;">
-                            <h4 style="font-size:14px;">Maintenance</h4>
+                        <div style="margin-top: 20px;">
+                            <h4>Maintenance Report</h4>
                             <div style="overflow-x: auto;">
                                 <table id="maintReportTable">
                                     <thead>
@@ -867,12 +886,12 @@
                         <h3>📧 Email Notifications</h3>
                         
                         <div class="email-composer">
-                            <h4 style="margin:0 0 10px 0;">Compose Email</h4>
+                            <h4>Compose Email</h4>
                             
                             <div class="recipient-email-container">
-                                <label style="font-size:13px; margin-bottom:5px; display:block;">📧 Send To:</label>
+                                <label>📧 Send To (Email Address):</label>
                                 <input type="email" id="flexibleRecipientEmail" placeholder="e.g., tenant@gmail.com" value="">
-                                <div id="flexibleEmailHint" style="font-size:12px; margin:5px 0;">Enter recipient's email</div>
+                                <div id="flexibleEmailHint" class="email-validation-hint">Enter the recipient's email address</div>
                             </div>
                             
                             <div class="form-row">
@@ -896,10 +915,14 @@
                             
                             <div id="singleTenantSelector" class="tenant-selector-container" style="margin-bottom: 15px; display: none;">
                                 <div class="tenant-selector-button" onclick="toggleTenantDropdown()">
-                                    <span id="selectedTenantDisplay">👇 Select tenant</span>
+                                    <span id="selectedTenantDisplay">👇 Click to select a tenant</span>
                                     <span class="arrow">▼</span>
                                 </div>
-                                <div id="tenantDropdown" class="tenant-dropdown"></div>
+                                <div id="tenantDropdown" class="tenant-dropdown">
+                                    <div class="tenant-option" style="text-align: center; color: #666; padding: 20px;">
+                                        Loading tenants...
+                                    </div>
+                                </div>
                                 <div id="selectedTenantBadge" class="selected-tenant-badge" style="display: none;"></div>
                             </div>
                             
@@ -908,25 +931,25 @@
                             </div>
                             
                             <div class="form-row">
-                                <textarea id="emailMessage" rows="4" placeholder="Email Message"></textarea>
+                                <textarea id="emailMessage" rows="6" placeholder="Email Message"></textarea>
                             </div>
                             
-                            <div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
-                                <button class="btn btn-p" style="flex:1;" onclick="sendFlexibleEmail()">📧 Send</button>
-                                <button class="btn btn-s" style="flex:1;" onclick="previewFlexibleEmail()">👁️ Preview</button>
-                                <button class="btn btn-v" style="flex:1;" onclick="validateAndSendFlexible()">✅ Validate</button>
+                            <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+                                <button class="btn btn-p" onclick="sendFlexibleEmail()">📧 Send Email</button>
+                                <button class="btn btn-s" onclick="previewFlexibleEmail()">👁️ Preview</button>
+                                <button class="btn btn-v" onclick="validateAndSendFlexible()">✅ Validate & Send</button>
                             </div>
                             
-                            <div id="emailStatus" style="margin-top: 12px;"></div>
+                            <div id="emailStatus" style="margin-top: 15px;"></div>
                         </div>
 
                         <div class="email-preview" id="emailPreview" style="display:none;">
-                            <h4 style="margin:0 0 8px 0;">Preview</h4>
+                            <h4>Email Preview</h4>
                             <div id="previewContent" class="preview-content"></div>
                         </div>
 
-                        <div style="margin-top: 15px;">
-                            <h4 style="font-size:14px;">Recent Emails</h4>
+                        <div style="margin-top: 20px;">
+                            <h4>Recent Emails</h4>
                             <div style="overflow-x: auto;">
                                 <table>
                                     <thead>
@@ -948,14 +971,14 @@
                 <div id="view-settings" class="view-section hidden">
                     <div class="card">
                         <h3>⚙️ Settings</h3>
-                        <div style="padding: 5px;">
-                            <h4 style="font-size:14px; margin:10px 0;">Change Password</h4>
+                        <div style="padding: 10px;">
+                            <h4>Change Password</h4>
                             <div class="form-row">
                                 <input type="password" id="newPass" placeholder="New Password">
                                 <button class="btn btn-v" onclick="updateAdminPass()">Update</button>
                             </div>
                             <hr>
-                            <h4 style="font-size:14px; margin:10px 0;">Security Passwords</h4>
+                            <h4>Security Passwords</h4>
                             <div class="form-row">
                                 <input type="password" id="wipePassInput" placeholder="Wipe Password">
                                 <button class="btn btn-w" onclick="saveWipePass()">Set</button>
@@ -965,13 +988,16 @@
                                 <button class="btn btn-d" onclick="saveDeletePass()">Set</button>
                             </div>
                             <hr>
-                            <h4 style="font-size:14px; margin:10px 0;">OTP Recovery Email</h4>
+                            <h4>OTP Recovery Email</h4>
                             <div class="form-row">
-                                <input type="email" id="adminEmail" placeholder="Email for OTP" value="">
-                                <button class="btn btn-p" onclick="saveRecoveryEmail()">Save</button>
+                                <input type="email" id="adminEmail" placeholder="Email for OTP recovery" value="">
+                                <button class="btn btn-p" onclick="saveRecoveryEmail()">Save Recovery Email</button>
+                            </div>
+                            <div class="form-row">
+                                <small style="color: #666;">This email will receive OTP codes when you click "Forgot Password"</small>
                             </div>
                             <hr>
-                            <h4 style="font-size:14px; margin:10px 0;">Company Info</h4>
+                            <h4>Company Information</h4>
                             <div class="form-row">
                                 <input type="text" id="companyName" placeholder="Company Name" value="Flat Master Pro">
                                 <button class="btn btn-s" onclick="saveCompanyName()">Save</button>
@@ -1055,7 +1081,6 @@
     </div>
 
     <script type="module">
-        // Your existing JavaScript code remains exactly the same
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
             getFirestore, 
